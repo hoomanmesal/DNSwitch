@@ -18,9 +18,11 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 (async () => {
   const userData = fs.mkdtempSync(path.join(os.tmpdir(), 'dnsw-ud-'));
-  const proc = spawn(electron, ['.', `--remote-debugging-port=${PORT}`, `--user-data-dir=${userData}`], {
-    cwd: path.join(__dirname, '..'), stdio: 'ignore',
-  });
+  // APP_EXE=<path to packaged exe> tests the built app instead of the dev sources.
+  const flags = [`--remote-debugging-port=${PORT}`, `--user-data-dir=${userData}`];
+  const proc = process.env.APP_EXE
+    ? spawn(process.env.APP_EXE, flags, { stdio: 'ignore' })
+    : spawn(electron, ['.', ...flags], { cwd: path.join(__dirname, '..'), stdio: 'ignore' });
   const before = await dns.getState();
   const wifi = before.adapters.find((a) => a.isWifi);
   let browser;
@@ -186,6 +188,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   } finally {
     try { if (browser) await browser.disconnect(); } catch {}
     proc.kill();
+    if (process.env.APP_EXE) { try { require('child_process').execSync('taskkill /F /IM "DNSwitch*.exe" /T', { stdio: 'ignore' }); } catch {} }
     // restore original DNS
     if (wifi) await dns.applyDns(wifi.index, wifi.mode === 'manual' ? wifi.servers : null);
     const after = (await dns.getState()).adapters.find((a) => a.index === wifi.index);
