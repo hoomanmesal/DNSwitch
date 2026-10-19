@@ -5,16 +5,27 @@
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
+    "test": "node --test tests/backend.test.js",
+    "test:live": "set LIVE=1&& node --test tests/backend.test.js",
     "dist": "electron-builder --win portable"
   },
   "devDependencies": {
     "electron": "^33.2.0",
-    "electron-builder": "^25.1.8"
+    "electron-builder": "^25.1.8",
+    "puppeteer-core": "^25.14.0"
   },
   "build": {
     "appId": "com.local.dnswitch",
     "productName": "DNSwitch",
-    "files": ["src/**/*", "assets/**/*", "package.json"],
-    "win": { "target": "portable", "icon": "assets/icon.ico", "requestedExecutionLevel": "asInvoker" }
+    "files": [
+      "src/**/*",
+      "assets/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": "portable",
+      "icon": "assets/icon.ico",
+      "requestedExecutionLevel": "asInvoker"
+    }
   }
 }
