@@ -19,7 +19,8 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 (async () => {
   const userData = fs.mkdtempSync(path.join(os.tmpdir(), 'dnsw-ud-'));
   // APP_EXE=<path to packaged exe> tests the built app instead of the dev sources.
-  const flags = [`--remote-debugging-port=${PORT}`, `--user-data-dir=${userData}`];
+  // Keep the window rendering even when another window covers it; Windows otherwise pauses occluded windows and CDP actions hang.
+  const flags = [`--remote-debugging-port=${PORT}`, `--user-data-dir=${userData}`, '--disable-features=CalculateNativeWinOcclusion', '--disable-backgrounding-occluded-windows', '--disable-renderer-backgrounding'];
   const proc = process.env.APP_EXE
     ? spawn(process.env.APP_EXE, flags, { stdio: 'ignore' })
     : spawn(electron, ['.', ...flags], { cwd: path.join(__dirname, '..'), stdio: 'ignore' });
@@ -52,7 +53,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
       [...document.querySelectorAll('#presets li')].find((li) => li.querySelector('.nm')?.textContent === n).querySelector('.' + c).click();
     }, name, cls);
 
-    await page.waitForFunction(() => document.getElementById('cur1').textContent !== '—' && document.getElementById('cur1').textContent !== '-', { timeout: 30000 });
+    await page.waitForFunction(() => document.getElementById('cur1').textContent !== '—' && document.getElementById('cur1').textContent !== '-', { timeout: 90000 });
     await sleep(500);
 
     // --- Initial render

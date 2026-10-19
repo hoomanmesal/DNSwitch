@@ -8,6 +8,8 @@ const electron = require('electron');
 
 const PORT = 19231;
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+// Wait for the browser to finish laying out after a viewport change (two frames), then a short grace period.
+const settle = async (page) => { await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)))); await sleep(400); };
 let failures = 0;
 const check = (name, cond, extra) => {
   console.log((cond ? 'PASS ' : 'FAIL ') + name + (cond ? '' : '  -> ' + extra));
@@ -17,7 +19,8 @@ const setWindow = (w, h) =>
   execFileSync('powershell', ['-NoProfile', '-File', path.join(__dirname, '..', 'tools', 'set-window.ps1'), String(w), String(h)]).toString().trim();
 
 (async () => {
-  const flags = [`--remote-debugging-port=${PORT}`, `--user-data-dir=${path.join(os.tmpdir(), 'dnsw-layout-ud')}`];
+  // Keep the window rendering even when another window covers it (see tests/ui.test.js).
+  const flags = [`--remote-debugging-port=${PORT}`, `--user-data-dir=${path.join(os.tmpdir(), 'dnsw-layout-ud')}`, '--disable-features=CalculateNativeWinOcclusion', '--disable-backgrounding-occluded-windows', '--disable-renderer-backgrounding'];
   const proc = process.env.APP_EXE
     ? spawn(process.env.APP_EXE, flags, { stdio: 'ignore' })
     : spawn(electron, ['.', ...flags], { cwd: path.join(__dirname, '..'), stdio: 'ignore' });
@@ -28,7 +31,7 @@ const setWindow = (w, h) =>
       catch { await sleep(500); }
     }
     const page = (await browser.pages()).find((p) => p.url().includes('index.html'));
-    await sleep(3500);
+    await sleep(5000); // a freshly downloaded exe can take a few seconds on first launch
 
     // Real window: the minimum is enforced, large sizes are accepted
     let m = setWindow(300, 300).match(/(\d+)x(\d+)/);
@@ -56,7 +59,7 @@ const setWindow = (w, h) =>
 
     const sizes = [[424, 521], [504, 681], [700, 700], [859, 700], [884, 761], [1400, 900], [2384, 1561]];
     for (const [w, h] of sizes) {
-      await page.setViewport({ width: w, height: h }); await sleep(250);
+      await page.setViewport({ width: w, height: h }); await settle(page);
       const r = await overflow();
       check(`no overflow at ${w}x${h}`, !r.h && !r.clipped.length, JSON.stringify(r));
       check(`status chip on one line at ${w}x${h}`, r.chipH < 36, r.chipH);
@@ -81,7 +84,7 @@ const setWindow = (w, h) =>
       toast('Administrator rights are required to change DNS. Restart DNSwitch as administrator.', true);
     });
     for (const [w, h] of sizes) {
-      await page.setViewport({ width: w, height: h }); await sleep(250);
+      await page.setViewport({ width: w, height: h }); await settle(page);
       const r = await overflow();
       check(`stress content: no overflow at ${w}x${h}`, !r.h && !r.clipped.length, JSON.stringify(r));
     }
@@ -92,13 +95,13 @@ const setWindow = (w, h) =>
       const p = document.querySelector('main > section:nth-of-type(2)').getBoundingClientRect();
       return { beside: p.left > a.right - 1, below: p.top >= a.bottom - 1 };
     });
-    await page.setViewport({ width: 1100, height: 800 }); await sleep(250);
+    await page.setViewport({ width: 1100, height: 800 }); await settle(page);
     check('wide: presets sit beside the hero', (await pos()).beside);
-    await page.setViewport({ width: 500, height: 800 }); await sleep(250);
+    await page.setViewport({ width: 500, height: 800 }); await settle(page);
     check('narrow: single column', (await pos()).below);
 
     // Dialog fits inside the minimum window
-    await page.setViewport({ width: 424, height: 521 }); await sleep(250);
+    await page.setViewport({ width: 424, height: 521 }); await settle(page);
     await page.evaluate(() => document.getElementById('add-preset').click()); await sleep(300);
     const fits = await page.evaluate(() => {
       const r = document.getElementById('dlg').getBoundingClientRect();
@@ -108,14 +111,14 @@ const setWindow = (w, h) =>
     await page.keyboard.press('Escape');
 
     // Keyboard focus ring
-    await page.setViewport({ width: 504, height: 681 }); await sleep(250);
+    await page.setViewport({ width: 504, height: 681 }); await settle(page);
     await page.focus('#apply-custom');
     const ring = await page.evaluate(() => getComputedStyle(document.activeElement).boxShadow);
     check('focus ring visible on buttons', ring && ring !== 'none', ring);
 
     // Browser zoom at the minimum window (effective viewport shrinks)
     for (const z of [1.25, 1.5, 2]) {
-      await page.setViewport({ width: Math.round(424 / z), height: Math.round(521 / z) }); await sleep(250);
+      await page.setViewport({ width: Math.round(424 / z), height: Math.round(521 / z) }); await settle(page);
       const r = await overflow();
       check(`no horizontal overflow at ${Math.round(z * 100)}% zoom`, !r.h, JSON.stringify(r));
     }
