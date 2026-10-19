@@ -58,3 +58,13 @@ Get-FileHash .\DNSwitch-X.Y.Z-setup.exe -Algorithm SHA256
 
 - **Code signing:** builds are unsigned, so Windows SmartScreen warns on first run. Options when it matters: [SignPath Foundation](https://signpath.org/) (free for open source) or a purchased code-signing certificate stored as a GitHub Actions secret.
 - **Auto-update:** not included. It would use `electron-updater` with the installer build.
+
+## Repository protection
+
+Two GitHub rulesets are active (Settings, Rules):
+
+- **Protect main:** `main` cannot be deleted or force-pushed, and changes must pass the `test-and-build` CI check. The repository owner can bypass, so direct pushes and the release commit still work.
+- **Protect release tags:** tags matching `v*` cannot be moved, updated or deleted. Only the owner can bypass, which is what makes "delete the draft and its tag" possible before a release is published.
+
+Never use the bypass to rewrite a published release tag; ship a new patch version instead.
+
