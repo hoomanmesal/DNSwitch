@@ -5,6 +5,7 @@ let state = { ssid: '', adapters: [] };
 let presets = [];
 let selectedIndex = null;
 let editingId = null;
+let gen = 0; // bumped on every apply so a stale in-flight refresh never overwrites newer state
 
 function toast(msg, isError) {
   const t = $('toast');
@@ -20,14 +21,20 @@ function banner(msg) {
   b.classList.toggle('hidden', !msg);
 }
 
+let busyCount = 0;
 async function call(p, busyMsg) {
-  if (busyMsg) { $('busy-msg').textContent = busyMsg; $('busy').classList.remove('hidden'); }
+  if (busyMsg) {
+    busyCount++;
+    $('busy-msg').textContent = busyMsg;
+    $('busy').classList.remove('hidden');
+  }
   try {
     const r = await p;
     if (!r.ok) throw new Error(r.error);
     return r.data;
   } finally {
-    $('busy').classList.add('hidden');
+    // only calls that showed the overlay may hide it (background refreshes must not)
+    if (busyMsg && --busyCount === 0) $('busy').classList.add('hidden');
   }
 }
 
@@ -39,7 +46,7 @@ function render() {
   for (const a of state.adapters) {
     const o = document.createElement('option');
     o.value = a.index;
-    o.textContent = a.name + (a.isWifi ? ' (Wi-Fi)' : '');
+    o.textContent = a.name + (a.isWifi && !/wi-?fi/i.test(a.name) ? ' (Wi-Fi)' : '');
     ad.appendChild(o);
   }
   const c = current();
@@ -121,8 +128,11 @@ function renderPresets() {
 }
 
 async function refresh(quiet) {
+  const myGen = gen;
   try {
-    state = await call(window.api.getState(), quiet ? null : 'Reading network settings...');
+    const fresh = await call(window.api.getState(), quiet ? null : 'Reading network settings...');
+    if (myGen !== gen) return; // an apply happened meanwhile; its result is newer
+    state = fresh;
     if (!state.adapters.some((a) => a.index === selectedIndex)) {
       const pick = state.adapters.find((a) => a.isWifi) || state.adapters[0];
       selectedIndex = pick ? pick.index : null;
@@ -136,9 +146,11 @@ async function refresh(quiet) {
 async function apply(servers, label) {
   const c = current();
   if (!c) return toast('No adapter selected.', true);
+  gen++;
   try {
     state = await call(window.api.applyDns(c.index, servers),
       servers ? 'Applying DNS...' : 'Resetting to automatic...');
+    gen++;
     render();
     toast(servers ? 'Applied ' + (label || servers.join(', ')) : 'DNS set to automatic');
   } catch (e) {
@@ -184,8 +196,21 @@ async function savePresetFromDialog(ev) {
   }
 }
 
+function askConfirm(msg) {
+  return new Promise((resolve) => {
+    const d = $('confirm');
+    $('confirm-msg').textContent = msg;
+    const done = (v) => { d.onclose = null; $('confirm-yes').onclick = $('confirm-no').onclick = null; if (d.open) d.close(); resolve(v); };
+    $('confirm-yes').onclick = (e) => { e.preventDefault(); done(true); };
+    $('confirm-no').onclick = () => done(false);
+    d.onclose = () => done(false); // Escape key
+    d.showModal();
+    $('confirm-no').focus();
+  });
+}
+
 async function removePreset(p) {
-  if (!confirm('Delete preset "' + p.name + '"?')) return;
+  if (!(await askConfirm('Delete preset "' + p.name + '"?'))) return;
   try {
     await call(window.api.removePreset(p.id));
     presets = await call(window.api.listPresets());

@@ -68,6 +68,17 @@
   </form>
 </dialog>
 
+<dialog id="confirm">
+  <form method="dialog" id="confirm-form">
+    <h2>Delete preset</h2>
+    <p id="confirm-msg" class="confirm-msg"></p>
+    <div class="row gap end">
+      <button type="button" id="confirm-no" class="btn ghost">Cancel</button>
+      <button type="submit" id="confirm-yes" class="btn danger">Delete</button>
+    </div>
+  </form>
+</dialog>
+
 <div id="busy" class="busy hidden"><div class="spin"></div><span id="busy-msg">Applying…</span></div>
 <div id="toast" class="toast hidden" role="status"></div>
 <script src="renderer.js"></script>
