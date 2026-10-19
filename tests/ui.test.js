@@ -19,7 +19,8 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 (async () => {
   const userData = fs.mkdtempSync(path.join(os.tmpdir(), 'dnsw-ud-'));
   // APP_EXE=<path to packaged exe> tests the built app instead of the dev sources.
-  const flags = [`--remote-debugging-port=${PORT}`, `--user-data-dir=${userData}`];
+  // Keep the window rendering even when another window covers it; Windows otherwise pauses occluded windows and CDP actions hang.
+  const flags = [`--remote-debugging-port=${PORT}`, `--user-data-dir=${userData}`, '--disable-features=CalculateNativeWinOcclusion', '--disable-backgrounding-occluded-windows', '--disable-renderer-backgrounding'];
   const proc = process.env.APP_EXE
     ? spawn(process.env.APP_EXE, flags, { stdio: 'ignore' })
     : spawn(electron, ['.', ...flags], { cwd: path.join(__dirname, '..'), stdio: 'ignore' });

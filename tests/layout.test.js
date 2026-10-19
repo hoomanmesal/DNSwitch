@@ -19,7 +19,8 @@ const setWindow = (w, h) =>
   execFileSync('powershell', ['-NoProfile', '-File', path.join(__dirname, '..', 'tools', 'set-window.ps1'), String(w), String(h)]).toString().trim();
 
 (async () => {
-  const flags = [`--remote-debugging-port=${PORT}`, `--user-data-dir=${path.join(os.tmpdir(), 'dnsw-layout-ud')}`];
+  // Keep the window rendering even when another window covers it (see tests/ui.test.js).
+  const flags = [`--remote-debugging-port=${PORT}`, `--user-data-dir=${path.join(os.tmpdir(), 'dnsw-layout-ud')}`, '--disable-features=CalculateNativeWinOcclusion', '--disable-backgrounding-occluded-windows', '--disable-renderer-backgrounding'];
   const proc = process.env.APP_EXE
     ? spawn(process.env.APP_EXE, flags, { stdio: 'ignore' })
     : spawn(electron, ['.', ...flags], { cwd: path.join(__dirname, '..'), stdio: 'ignore' });
