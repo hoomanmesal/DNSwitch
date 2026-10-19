@@ -6,6 +6,7 @@
   "scripts": {
     "start": "electron .",
     "test": "node --test tests/backend.test.js",
+    "test:layout": "node tests/layout.test.js",
     "test:live": "set LIVE=1&& node --test tests/backend.test.js",
     "dist": "electron-builder --win portable"
   },

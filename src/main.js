@@ -12,7 +12,7 @@ function createWindow() {
     height: 720,
     minWidth: 440,
     minHeight: 560,
-    backgroundColor: '#0f1220',
+    backgroundColor: '#0a0c11',
     title: 'DNSwitch',
     icon: path.join(__dirname, '..', 'assets', 'icon.png'),
     webPreferences: {
