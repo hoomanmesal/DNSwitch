@@ -1,0 +1,59 @@
+name: Bug report
+description: Something in DNSwitch does not work as expected
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What did you do, what did you expect, and what happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open DNSwitch
+        2. Click the Cloudflare preset
+        3. ...
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: DNSwitch version
+      description: Shown on the release you downloaded, for example 1.0.0.
+      placeholder: "1.0.0"
+    validations:
+      required: true
+  - type: dropdown
+    id: build
+    attributes:
+      label: Which build are you using?
+      options:
+        - Installer (setup.exe)
+        - Portable exe
+        - Run from source (npm start)
+    validations:
+      required: true
+  - type: input
+    id: windows
+    attributes:
+      label: Windows version
+      placeholder: "Windows 11 23H2"
+    validations:
+      required: true
+  - type: dropdown
+    id: uac
+    attributes:
+      label: Is User Account Control (the permission prompt) turned on?
+      options:
+        - "Yes"
+        - "No"
+        - "I don't know"
+  - type: textarea
+    id: extra
+    attributes:
+      label: Anything else
+      description: Screenshots, the error message shown in the app, or your adapter type (Wi-Fi, Ethernet, VPN). Remove any IP addresses you do not want to share.
