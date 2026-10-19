@@ -111,6 +111,9 @@ try {
     if (/ELEVATION_CANCELLED/.test(e.message)) throw new Error('Administrator permission was declined.');
     let detail = '';
     try { detail = fs.readFileSync(errFile, 'utf8').trim(); } catch {}
+    if (/CIM resource|access (is )?denied|not available to the client/i.test(detail || e.message)) {
+      throw new Error('Administrator rights are required to change DNS. Restart DNSwitch as administrator.');
+    }
     throw new Error(detail || e.message);
   } finally {
     try { fs.rmSync(dir, { recursive: true, force: true }); } catch {}
