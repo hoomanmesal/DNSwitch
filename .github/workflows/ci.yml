@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-and-build:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Unit tests (presets, validation, command building). The window-based UI and layout tests
+      # drive a real desktop window and change DNS, so they are run locally, not here.
+      - name: Unit tests
+        run: npm test
+
+      - name: Build installer and portable exe
+        run: npm run dist -- --publish never
+
+      - name: Keep the build for review
+        uses: actions/upload-artifact@v4
+        with:
+          name: DNSwitch-build
+          path: |
+            dist/*-setup.exe
+            dist/*-portable.exe
+          retention-days: 7
+          if-no-files-found: error
