@@ -31,20 +31,22 @@ All values are tokens in `src/tokens.css`.
 | Card | `--bg-2` | `#181c25` | cards |
 | Raised | `--bg-3` | `#212633` | tiles, inputs, hovered rows |
 | Pressed/selected | `--bg-4` | `#2b3141` | pressed states, toggle track |
-| Hairline | `--line` / `--line-strong` | white 7% / 14% | borders, dividers |
+| Hairline | `--line` / `--line-strong` | white 7% / 14% | decorative card borders and dividers only |
+| Control border | `--control-border` | `#6f788c` | borders of inputs, selects, ghost and icon buttons (3.85:1 on card, 3.41:1 on raised) |
 | Glass | `--glass` | `rgba(24,28,37,.62)` | translucent preset-row fill (no blur: it sits on a flat card, so blur would be decoration) |
 | Text | `--text` | `#eef3fa` | primary text, hero numerals |
 | Secondary | `--text-2` | `#a4adbf` | body secondary |
-| Tertiary | `--text-3` | `#727c90` | labels, units (min 12px) |
+| Tertiary | `--text-3` | `#8a94a8` | labels, units, placeholders (5.6:1 on card, 4.95:1 on raised) |
 | Decor | `--text-faint` | `#4a5263` | decoration only; never information |
 | **Primary (ice)** | `--ice` / `--ice-ink` | `#e6f0ff` / `#0d1626` | the single filled action, active segment, selected bar |
+| On alert | `--on-alert` | `#0d1626` | text on an `--alert` fill (white would be 3.0:1) |
 | OK | `--ok` | `#3ddc84` | connected, applied, ACTIVE |
 | Warn | `--warn` | `#ffa94d` | secondary metric, caution |
 | Alert | `--alert` | `#ff5d4d` | errors, declined, attention outline |
 | Data | `--data` | `#4dd6e6` | charts, live latency |
 | Glow | `--glow` | `#7b6cff` | ambient background glow only |
 
-Contrast: `--text` on `--bg-2` > 14:1; `--text-2` > 7:1; `--text-3` on `--bg-2` ~ 4.6:1 (AA for 12px+). `--text-faint` fails AA by design (decoration).
+Contrast (measured): `--text` on `--bg-2` 15.3:1; `--text-2` 7.6:1; `--text-3` 5.6:1 on `--bg-2` and 4.95:1 on `--bg-3`; signals `--ok`, `--warn`, `--data`, `--alert` are 5.6:1 to 9.8:1 on `--bg-2`; `--ice-ink` on `--ice` 15.8:1; `--on-alert` on `--alert` 6.0:1. Meaningful control borders use `--control-border` (>= 3:1). `--text-faint` and `--line` fail by design (decoration only).
 Tinted backgrounds (`--ok-bg` etc.) are 12% fills paired with the full-strength colour as text/icon.
 
 ## 4. Typography

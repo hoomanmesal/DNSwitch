@@ -10,17 +10,19 @@
   --bg-4: #2b3141;      /* pressed, selected track */
   --line: rgba(255, 255, 255, 0.07);
   --line-strong: rgba(255, 255, 255, 0.14);
+  --control-border: #6f788c;  /* borders of inputs, selects, ghost and icon buttons: >= 3:1 on bg-2 and bg-3 */
   --glass: rgba(24, 28, 37, 0.62);   /* frosted rows (ref 4), use with blur */
 
   /* Text */
   --text: #eef3fa;      /* ice white; also the primary-action fill (ref 1) */
   --text-2: #a4adbf;
-  --text-3: #727c90;    /* labels, units; keep >= 12px */
+  --text-3: #8a94a8;    /* labels, units, placeholders: 5.6:1 on bg-2, 4.95:1 on bg-3 */
   --text-faint: #4a5263;/* decoration only, never for information */
 
   /* Primary: ice. Filled CTA, active bar, active tab (ref 1) */
   --ice: #e6f0ff;
   --ice-ink: #0d1626;   /* text on ice */
+  --on-alert: #0d1626;  /* text on an alert fill: 6:1 (white is only 3:1) */
 
   /* Signals: each color has exactly one meaning */
   --ok: #3ddc84;        /* connected, applied, positive delta */
