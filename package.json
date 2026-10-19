@@ -2,6 +2,16 @@
   "name": "dnswitch",
   "version": "1.0.0",
   "description": "View and switch Windows DNS settings for your Wi-Fi connection",
+  "license": "MIT",
+  "author": "hoomanmesal",
+  "homepage": "https://github.com/hoomanmesal/DNSwitch#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hoomanmesal/DNSwitch.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hoomanmesal/DNSwitch/issues"
+  },
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
