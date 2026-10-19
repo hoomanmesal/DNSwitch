@@ -58,6 +58,7 @@ Produces the installer and the portable exe in `dist/`. Releases are built by Gi
 
 - [CHANGELOG.md](CHANGELOG.md): what changed in each version
 - [DESIGN.md](DESIGN.md) and [PRODUCT.md](PRODUCT.md): the design system and product context
+- [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md) and [RELEASING.md](RELEASING.md): how releases are prepared and published
 - [CONTRIBUTING.md](CONTRIBUTING.md) and [SECURITY.md](SECURITY.md)
 
 ## License
