@@ -18,7 +18,7 @@
     "test": "node --test tests/backend.test.js",
     "test:layout": "node tests/layout.test.js",
     "test:live": "set LIVE=1&& node --test tests/backend.test.js",
-    "dist": "electron-builder --win portable"
+    "dist": "electron-builder --win"
   },
   "devDependencies": {
     "@fontsource-variable/inter-tight": "^5.3.0",
@@ -28,17 +28,49 @@
     "puppeteer-core": "^25.14.0"
   },
   "build": {
-    "appId": "com.local.dnswitch",
+    "appId": "com.hoomanmesal.dnswitch",
     "productName": "DNSwitch",
+    "copyright": "Copyright (c) 2026 hoomanmesal",
     "files": [
       "src/**/*",
       "assets/**/*",
       "package.json"
     ],
+    "directories": {
+      "output": "dist"
+    },
     "win": {
-      "target": "portable",
       "icon": "assets/icon.ico",
-      "requestedExecutionLevel": "asInvoker"
-    }
+      "requestedExecutionLevel": "requireAdministrator",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "DNSwitch",
+      "artifactName": "DNSwitch-${version}-setup.${ext}"
+    },
+    "portable": {
+      "artifactName": "DNSwitch-${version}-portable.${ext}"
+    },
+    "electronLanguages": [
+      "en-US"
+    ]
   }
 }
