@@ -21,6 +21,8 @@ start the app from an elevated terminal to avoid that.
 ```
 npm test                 # unit tests (no system changes)
 node tests/ui.test.js    # end-to-end UI test; needs an elevated shell, changes then restores Wi-Fi DNS
+npm run test:layout      # window min size, overflow at 7 sizes + zoom, stress content (no DNS changes)
+APP_EXE=<path to exe>    # set this env var to run either UI test against the packaged app
 ```
 
 ## Build a portable exe

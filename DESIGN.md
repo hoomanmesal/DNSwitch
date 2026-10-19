@@ -129,7 +129,11 @@ Custom card   CUSTOM
               [Preferred input] [Alternate input]
               [ Apply (primary) ]   [ Save as preset (ghost) ]
 ```
-Single column, max content width 560, 16px gutters at min width, no horizontal scroll. Background: `--bg-0` with a faint `--glow` radial at the top and a 4% circuit-trace SVG pattern.
+Single column, max content width 560, 16px gutters at min width, no horizontal scroll.
+
+**Window sizes:** default 520 x 720, minimum 440 x 560 (enforced by the window), no maximum.
+**Breakpoints (CSS px):** under 860 = single column; 860 and up = two columns (hero sticky on the left, presets and custom stacked on the right, content max 1000, centred). Under 640 tall, spacing and the readout tighten so the hero and primary action stay above the fold. Under 480 wide, the readout drops to 32px and the Apply row stacks.
+**Shrinking rule:** every grid and flex child that holds text uses `minmax(0, 1fr)` or `min-width: 0` with ellipsis, so long Wi-Fi names, adapter names, preset names and 255.255.255.255 never push a card past the window. The status chip never wraps; the status/adapter row wraps instead. Background: `--bg-0` with a faint `--glow` radial at the top and a 4% circuit-trace SVG pattern.
 
 ## 9. States and copy
 
