@@ -47,7 +47,7 @@ Name: **DNSwitch** (renamed from the working title "DnSetter"). App icon: toggle
 ## Evidence on Hand
 
 - Working app and tests in this repository (`src/`, `tests/`); packaged exe at `dist/` (git-ignored).
-- A design direction already drafted from five Dribbble references: `DESIGN.md`, `design/references.md`, `design/kit.html`, `src/tokens.css`. These are a proposal for the next UI pass, not yet shipped in `src/styles.css`.
+- A design direction already drafted from five Dribbble references: `DESIGN.md`, `design/references.md`, `design/kit.html`, `src/tokens.css`. The design system is applied in `src/styles.css` and `src/index.html`.
 - No user research, testimonials, usage data or client brand guidelines exist. Do not fabricate them.
 
 ## Product Principles

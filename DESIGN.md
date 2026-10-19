@@ -2,7 +2,7 @@
 
 Dark, instrument-panel UI for a small Windows utility that shows and switches DNS. Derived from five network-monitoring references (see [design/references.md](design/references.md)). Tokens live in [src/tokens.css](src/tokens.css); a live component kit is in [design/kit.html](design/kit.html).
 
-> Status: design spec. The shipped app (`src/styles.css`) is the pre-design-system version and is not yet migrated.
+> Status: applied to the app (`src/styles.css`, `src/index.html`). Not yet built: the latency dial and signal bars (need a DNS probe) and the Automatic | Manual segmented control; the app uses the ghost "Set automatically" button instead.
 
 ## 1. Concept
 
