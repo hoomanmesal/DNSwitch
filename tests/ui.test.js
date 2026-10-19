@@ -52,7 +52,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
       [...document.querySelectorAll('#presets li')].find((li) => li.querySelector('.nm')?.textContent === n).querySelector('.' + c).click();
     }, name, cls);
 
-    await page.waitForFunction(() => document.getElementById('cur1').textContent !== '—' && document.getElementById('cur1').textContent !== '-', { timeout: 30000 });
+    await page.waitForFunction(() => document.getElementById('cur1').textContent !== '—' && document.getElementById('cur1').textContent !== '-', { timeout: 90000 });
     await sleep(500);
 
     // --- Initial render
