@@ -59,7 +59,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
     check('title', (await page.title()) === 'DNSwitch');
     check('ssid shown', (await txt('#ssid')).includes(before.ssid || wifi.description), await txt('#ssid'));
     check('Wi-Fi adapter selected by default', (await page.$eval('#adapter', (e) => e.selectedOptions[0].textContent)).includes('Wi-Fi'));
-    check('current servers match system', (await txt('#cur1')) === (wifi.servers[0] || '-'), await txt('#cur1'));
+    check('current servers match system', (await txt('#cur1')) === (wifi.servers[0] || '—'), await txt('#cur1'));
     check('mode badge matches', (await txt('#mode')) === (wifi.mode === 'auto' ? 'Automatic (DHCP)' : 'Manual'));
     check('4 default presets', (await presetNames()).join() === 'Google,Cloudflare,Quad9,OpenDNS', (await presetNames()).join());
 
@@ -166,7 +166,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
     // --- Refresh picks up external change
     await dns.applyDns(wifi.index, ['208.67.222.222', '208.67.220.220']);
-    await page.click('#refresh'); await waitIdle(); await sleep(500);
+    await page.click('#refresh'); await page.waitForSelector('#refresh:not(.spinning)', { timeout: 30000 }); await sleep(700);
     check('refresh detects external change + OpenDNS ACTIVE', (await txt('#cur1')) === '208.67.222.222' && (await page.$$eval('#presets li.active .nm', (e) => e.map((x) => x.textContent))).join() === 'OpenDNS');
 
     // --- Persistence across restart is checked via file

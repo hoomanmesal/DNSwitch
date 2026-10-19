@@ -32,7 +32,7 @@ All values are tokens in `src/tokens.css`.
 | Raised | `--bg-3` | `#212633` | tiles, inputs, hovered rows |
 | Pressed/selected | `--bg-4` | `#2b3141` | pressed states, toggle track |
 | Hairline | `--line` / `--line-strong` | white 7% / 14% | borders, dividers |
-| Glass | `--glass` | `rgba(24,28,37,.62)` | preset rows (with `backdrop-filter: blur(14px)`) |
+| Glass | `--glass` | `rgba(24,28,37,.62)` | translucent preset-row fill (no blur: it sits on a flat card, so blur would be decoration) |
 | Text | `--text` | `#eef3fa` | primary text, hero numerals |
 | Secondary | `--text-2` | `#a4adbf` | body secondary |
 | Tertiary | `--text-3` | `#727c90` | labels, units (min 12px) |
@@ -95,7 +95,7 @@ Pill, 1px `--line-strong`, transparent, `--text`. Hover fills `--bg-3`. Small va
 Pill container `--bg-3`, inner active segment `--ice` with `--ice-ink` text. Used for Mode: Automatic | Manual (replaces the separate "Set automatically" button in a future iteration).
 
 ### Preset row (frosted list, ref 4)
-Radius 14, `--glass` with blur, 1px `--line`, gap 8. Left to right: 36px icon tile (globe), name (Body 600), IPs (mono 12 `--text-3`), 5-segment signal bar (latency band, optional), right-aligned actions (edit, delete as 28px ghost icons, visible on hover/focus). **Active** row: 1px `--ok` border, `--ok-bg` tint, "ACTIVE" count-pill with `--ok` dot. Click anywhere applies.
+Radius 14, `--glass` fill, 1px `--line`, gap 8. Left to right: 36px icon tile (globe), name (Body 600), IPs (mono 12 `--text-3`), 5-segment signal bar (latency band, optional), right-aligned actions (edit, delete as 28px ghost icons, visible on hover/focus). **Active** row: 1px `--ok` border, `--ok-bg` tint, "ACTIVE" count-pill with `--ok` dot. Click anywhere applies.
 
 ### Inputs
 `--bg-3` fill, radius 8, 44px high, mono for IP fields, 1px `--line`; focus `--focus-ring`; invalid 1px `--alert` plus helper text in `--alert`. Placeholders in `--text-3`.
@@ -154,7 +154,7 @@ Single column, max content width 560, 16px gutters at min width, no horizontal s
 
 - Import `src/tokens.css` first; replace the ad-hoc variables in `src/styles.css` with the token names.
 - Keep CSP strict (`default-src 'self'`): local fonts via `@font-face` from `assets/fonts/`, SVG icons inline or as local files, no CDN.
-- `backdrop-filter` is supported in Electron 33; provide a solid `--bg-3` fallback.
+- `backdrop-filter` is used only for the dialog backdrop (6px). Preset rows use a plain translucent fill: blur over a flat card is invisible and rendered unreliably.
 - The dial is SVG (arc via `stroke-dasharray`, needle via CSS `transform: rotate`).
 - Latency data is **not available yet**: the dial/signal bars need a small main-process probe (time a DNS query against each server). Until built, render the dial in its idle state or omit it.
 
