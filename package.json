@@ -14,7 +14,7 @@
   "build": {
     "appId": "com.local.dnswitch",
     "productName": "DNSwitch",
-    "files": ["src/**/*", "package.json"],
-    "win": { "target": "portable" }
+    "files": ["src/**/*", "assets/**/*", "package.json"],
+    "win": { "target": "portable", "icon": "assets/icon.ico", "requestedExecutionLevel": "asInvoker" }
   }
 }
