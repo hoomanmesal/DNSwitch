@@ -42,11 +42,11 @@ All values are tokens in `src/tokens.css`.
 | On alert | `--on-alert` | `#0d1626` | text on an `--alert` fill (white would be 3.0:1) |
 | OK | `--ok` | `#3ddc84` | connected, applied, ACTIVE |
 | Warn | `--warn` | `#ffa94d` | secondary metric, caution |
-| Alert | `--alert` | `#ff5d4d` | errors, declined, attention outline |
+| Alert | `--alert` | `#ff6b5b` | errors, declined, attention outline |
 | Data | `--data` | `#4dd6e6` | charts, live latency |
 | Glow | `--glow` | `#7b6cff` | ambient background glow only |
 
-Contrast (measured): `--text` on `--bg-2` 15.3:1; `--text-2` 7.6:1; `--text-3` 5.6:1 on `--bg-2` and 4.95:1 on `--bg-3`; signals `--ok`, `--warn`, `--data`, `--alert` are 5.6:1 to 9.8:1 on `--bg-2`; `--ice-ink` on `--ice` 15.8:1; `--on-alert` on `--alert` 6.0:1. Meaningful control borders use `--control-border` (>= 3:1). `--text-faint` and `--line` fail by design (decoration only).
+Contrast (measured): `--text` on `--bg-2` 15.3:1; `--text-2` 7.6:1; `--text-3` 5.6:1 on `--bg-2` and 4.95:1 on `--bg-3`; signals `--ok`, `--warn`, `--data`, `--alert` are 6.1:1 to 9.8:1 on `--bg-2` and `--alert` is 4.64:1 on `--bg-4`; `--ice-ink` on `--ice` 15.8:1; `--on-alert` on `--alert` 6.0:1. Meaningful control borders use `--control-border` (>= 3:1). `--text-faint` and `--line` fail by design (decoration only).
 Tinted backgrounds (`--ok-bg` etc.) are 12% fills paired with the full-strength colour as text/icon.
 
 ## 4. Typography

@@ -27,13 +27,13 @@
   /* Signals: each color has exactly one meaning */
   --ok: #3ddc84;        /* connected, applied, positive delta */
   --warn: #ffa94d;      /* upload-style secondary metric, caution */
-  --alert: #ff5d4d;     /* error, needle, "attention" outline (refs 2, 5) */
+  --alert: #ff6b5b;     /* error, needle, "attention" outline (refs 2, 5) */
   --data: #4dd6e6;      /* chart lines, live data (refs 4, 5) */
   --glow: #7b6cff;      /* ambient glow, map/globe, decorative only (ref 3) */
 
   --ok-bg: rgba(61, 220, 132, 0.12);
   --warn-bg: rgba(255, 169, 77, 0.12);
-  --alert-bg: rgba(255, 93, 77, 0.12);
+  --alert-bg: rgba(255, 107, 91, 0.12);
   --data-bg: rgba(77, 214, 230, 0.12);
 
   /* Type */
@@ -61,7 +61,7 @@
   --shadow-card: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 12px 32px rgba(0, 0, 0, 0.35);
   --shadow-tile: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 4px 12px rgba(0, 0, 0, 0.3);
   --shadow-glow-ok: 0 0 12px rgba(61, 220, 132, 0.55);
-  --shadow-glow-alert: 0 0 0 1px var(--alert), 0 0 22px rgba(255, 93, 77, 0.35);
+  --shadow-glow-alert: 0 0 0 1px var(--alert), 0 0 22px rgba(255, 107, 91, 0.35);
 
   /* Motion */
   --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
