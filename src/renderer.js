@@ -38,6 +38,24 @@ async function call(p, busyMsg) {
   }
 }
 
+const SVGNS = 'http://www.w3.org/2000/svg';
+function icon(name) {
+  const svg = document.createElementNS(SVGNS, 'svg');
+  svg.setAttribute('class', 'ic');
+  const use = document.createElementNS(SVGNS, 'use');
+  use.setAttribute('href', '#i-' + name);
+  svg.appendChild(use);
+  return svg;
+}
+
+function setText(el, value) {
+  if (el.textContent === value) return;
+  el.textContent = value;
+  el.classList.remove('tick');
+  void el.offsetWidth; // restart the animation
+  el.classList.add('tick');
+}
+
 const current = () => state.adapters.find((a) => a.index === selectedIndex);
 
 function render() {
@@ -62,11 +80,12 @@ function render() {
   else if (!wifi) banner('No connected Wi-Fi adapter found - showing another active adapter.');
   else banner('');
 
-  const badge = $('mode');
-  badge.className = 'badge' + (hasAdapter ? ' ' + c.mode : '');
-  badge.textContent = hasAdapter ? (c.mode === 'auto' ? 'Automatic (DHCP)' : 'Manual') : '-';
-  $('cur1').textContent = (hasAdapter && c.servers[0]) || '-';
-  $('cur2').textContent = (hasAdapter && c.servers[1]) || '-';
+  const chip = $('mode');
+  chip.className = 'chip ' + (hasAdapter ? (c.mode === 'auto' ? 'auto' : 'manual') : 'neutral');
+  const dot = document.createElement('i');
+  chip.replaceChildren(dot, document.createTextNode(hasAdapter ? (c.mode === 'auto' ? 'Automatic (DHCP)' : 'Manual') : '—'));
+  setText($('cur1'), (hasAdapter && c.servers[0]) || '—');
+  setText($('cur2'), (hasAdapter && c.servers[1]) || '—');
   $('auto').disabled = !hasAdapter || c.mode === 'auto';
   $('apply-custom').disabled = !hasAdapter;
   renderPresets();
@@ -79,7 +98,7 @@ function renderPresets() {
     const li = document.createElement('li');
     li.className = 'empty';
     li.style.cursor = 'default';
-    li.textContent = 'No presets yet. Click "+ New" to add one.';
+    li.textContent = 'No presets yet. Click "New" to add one.';
     ul.appendChild(li);
     return;
   }
@@ -91,6 +110,11 @@ function renderPresets() {
     const li = document.createElement('li');
     if (active) li.classList.add('active');
     li.title = 'Click to apply';
+
+    const ico = document.createElement('div');
+    ico.className = 'ico';
+    ico.appendChild(icon('globe'));
+    li.appendChild(ico);
 
     const info = document.createElement('div');
     info.className = 'info';
@@ -111,13 +135,13 @@ function renderPresets() {
     }
     const edit = document.createElement('button');
     edit.className = 'mini';
-    edit.textContent = '✎';
+    edit.appendChild(icon('pencil'));
     edit.title = 'Edit';
     edit.setAttribute('aria-label', 'Edit ' + p.name);
     edit.onclick = (e) => { e.stopPropagation(); openDialog(p); };
     const del = document.createElement('button');
     del.className = 'mini del';
-    del.textContent = '✕';
+    del.appendChild(icon('trash'));
     del.title = 'Delete';
     del.setAttribute('aria-label', 'Delete ' + p.name);
     del.onclick = (e) => { e.stopPropagation(); removePreset(p); };
@@ -218,7 +242,10 @@ async function removePreset(p) {
   } catch (e) { toast(e.message, true); }
 }
 
-$('refresh').onclick = () => refresh();
+$('refresh').onclick = async () => {
+  $('refresh').classList.add('spinning');
+  try { await refresh(true); } finally { $('refresh').classList.remove('spinning'); }
+};
 $('adapter').onchange = (e) => { selectedIndex = Number(e.target.value); render(); };
 $('auto').onclick = () => apply(null);
 $('apply-custom').onclick = () => {
