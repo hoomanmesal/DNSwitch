@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self'">
+<title>DNSwitch</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+  <img src="../assets/icon.png" alt="" class="logo">
+  <div>
+    <h1>DNSwitch</h1>
+    <p class="sub" id="ssid">Detecting connection…</p>
+  </div>
+  <button id="refresh" class="icon-btn" title="Refresh" aria-label="Refresh">⟳</button>
+</header>
+
+<div id="banner" class="banner hidden" role="alert"></div>
+
+<section class="card" id="current">
+  <div class="row between">
+    <label class="lbl" for="adapter">Adapter</label>
+    <select id="adapter"></select>
+  </div>
+  <div class="row between status">
+    <span class="lbl">Current DNS</span>
+    <span id="mode" class="badge">—</span>
+  </div>
+  <div class="servers">
+    <div><span class="k">Preferred</span><span class="v" id="cur1">—</span></div>
+    <div><span class="k">Alternate</span><span class="v" id="cur2">—</span></div>
+  </div>
+  <button id="auto" class="btn wide">Set automatically (DHCP)</button>
+</section>
+
+<section class="card">
+  <div class="row between">
+    <h2>Presets</h2>
+    <button id="add-preset" class="btn small ghost">+ New</button>
+  </div>
+  <ul id="presets" class="presets"></ul>
+</section>
+
+<section class="card">
+  <h2>Custom</h2>
+  <div class="fields">
+    <input id="c1" placeholder="Preferred DNS server" inputmode="decimal" autocomplete="off" spellcheck="false">
+    <input id="c2" placeholder="Alternate DNS server (optional)" inputmode="decimal" autocomplete="off" spellcheck="false">
+  </div>
+  <div class="row gap">
+    <button id="apply-custom" class="btn grow">Apply</button>
+    <button id="save-custom" class="btn ghost">Save as preset</button>
+  </div>
+</section>
+
+<dialog id="dlg">
+  <form method="dialog" id="dlg-form">
+    <h2 id="dlg-title">Preset</h2>
+    <input id="p-name" placeholder="Name" maxlength="40" autocomplete="off">
+    <input id="p-1" placeholder="Preferred DNS server" autocomplete="off" spellcheck="false">
+    <input id="p-2" placeholder="Alternate DNS server (optional)" autocomplete="off" spellcheck="false">
+    <p id="dlg-err" class="err hidden"></p>
+    <div class="row gap end">
+      <button type="button" id="dlg-cancel" class="btn ghost">Cancel</button>
+      <button type="submit" id="dlg-save" class="btn">Save</button>
+    </div>
+  </form>
+</dialog>
+
+<div id="busy" class="busy hidden"><div class="spin"></div><span id="busy-msg">Applying…</span></div>
+<div id="toast" class="toast hidden" role="status"></div>
+<script src="renderer.js"></script>
+</body>
+</html>
