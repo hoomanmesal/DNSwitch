@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DNSwitch Design Kit</title>
+<link rel="stylesheet" href="../src/tokens.css">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg-0); color: var(--text); font: 450 var(--fs-body)/var(--lh-body) var(--font-sans);
+    background-image: radial-gradient(60% 40% at 50% -5%, rgba(123,108,255,.16), transparent 70%); }
+  main { max-width: 1040px; margin: 0 auto; padding: 40px 20px 80px; display: grid; gap: 40px; }
+  h1 { font-size: 28px; margin: 0 0 4px; } h2 { font-size: var(--fs-label); letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--text-3); margin: 0 0 14px; font-weight: 600; }
+  p.lead { margin: 0; color: var(--text-2); }
+  .grid { display: grid; gap: 14px; } .cols-4 { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+  .cols-2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+  .card { background: var(--bg-2); border-radius: var(--r-lg); padding: var(--s-5); box-shadow: var(--shadow-card); border: 1px solid var(--line); }
+  .sw { border-radius: var(--r-md); padding: 12px; min-height: 84px; display: flex; flex-direction: column; justify-content: flex-end; border: 1px solid var(--line); font-size: 12px; }
+  .sw b { font-weight: 600; } .sw span { font-family: var(--font-mono); opacity: .8; }
+  .label { font-size: var(--fs-label); font-weight: 600; letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--text-3); }
+  .chip { display: inline-flex; align-items: center; gap: 8px; height: 28px; padding: 0 12px; border-radius: var(--r-pill); font-size: 12px; font-weight: 600; }
+  .chip i { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .chip.ok { color: var(--ok); background: var(--ok-bg); } .chip.ok i { box-shadow: var(--shadow-glow-ok); }
+  .chip.warn { color: var(--warn); background: var(--warn-bg); } .chip.alert { color: var(--alert); background: var(--alert-bg); }
+  .chip.data { color: var(--data); background: var(--data-bg); } .chip.neutral { color: var(--text-2); background: var(--bg-3); }
+  .btn { height: 48px; border-radius: var(--r-pill); border: 0; padding: 0 24px; font: 600 14px var(--font-sans); cursor: pointer;
+    background: var(--ice); color: var(--ice-ink); transition: filter var(--dur-fast) var(--ease-out), transform var(--dur-fast); }
+  .btn:hover { filter: brightness(1.06); } .btn:active { transform: translateY(1px); } .btn:disabled { opacity: .4; cursor: not-allowed; }
+  .btn.ghost { background: transparent; color: var(--text); border: 1px solid var(--line-strong); } .btn.ghost:hover { background: var(--bg-3); filter: none; }
+  .btn.sm { height: 32px; padding: 0 14px; font-size: 12px; } .btn.danger { background: var(--alert); color: #fff; }
+  button:focus-visible, input:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+  .seg { display: inline-flex; padding: 4px; background: var(--bg-3); border-radius: var(--r-pill); }
+  .seg button { height: 32px; padding: 0 18px; border: 0; border-radius: var(--r-pill); background: transparent; color: var(--text-2); font: 600 13px var(--font-sans); cursor: pointer; }
+  .seg button.on { background: var(--ice); color: var(--ice-ink); }
+  .tile { background: var(--bg-3); border-radius: var(--r-md); padding: 12px 14px; box-shadow: var(--shadow-tile); display: grid; gap: 6px; }
+  .tile .top { display: flex; justify-content: space-between; align-items: center; }
+  .tile .val { font-size: 22px; font-weight: 600; } .tile .unit { color: var(--text-3); font-size: 12px; margin-left: 4px; }
+  .arrow-ok { color: var(--ok); } .arrow-warn { color: var(--warn); }
+  .hero { text-align: center; display: grid; gap: 8px; justify-items: center; padding: 28px 20px; }
+  .hero .big { font-size: var(--fs-display); font-weight: 600; line-height: var(--lh-tight); }
+  .hero .alt { font-size: 20px; color: var(--text-2); }
+  .row { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: var(--r-md); background: var(--glass);
+    border: 1px solid var(--line); backdrop-filter: blur(14px); cursor: pointer; transition: background var(--dur-fast); }
+  .row:hover { background: var(--bg-3); }
+  .row.active { border-color: var(--ok); background: var(--ok-bg); }
+  .ico { width: 36px; height: 36px; border-radius: 10px; background: var(--bg-3); display: grid; place-items: center; color: var(--text-2); flex: none; }
+  .row .info { flex: 1; min-width: 0; } .row .nm { font-weight: 600; } .row .ips { font-size: 12px; color: var(--text-3); }
+  .bars { display: inline-flex; gap: 2px; align-items: flex-end; height: 14px; }
+  .bars b { width: 3px; background: var(--text-faint); border-radius: 1px; } .bars b.on { background: var(--ok); }
+  .bars b:nth-child(1){height:5px}.bars b:nth-child(2){height:7px}.bars b:nth-child(3){height:9px}.bars b:nth-child(4){height:11px}.bars b:nth-child(5){height:14px}
+  .pill-count { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: var(--r-pill); background: var(--bg-3); font-size: 12px; font-weight: 600; }
+  .pill-count i { width: 6px; height: 6px; border-radius: 50%; background: var(--ok); }
+  input.f { width: 100%; height: 44px; background: var(--bg-3); border: 1px solid var(--line); border-radius: var(--r-sm); color: var(--text); padding: 0 14px; font: 450 14px var(--font-mono); }
+  input.f::placeholder { color: var(--text-3); font-family: var(--font-sans); } input.f.bad { border-color: var(--alert); }
+  .help { font-size: 12px; color: var(--alert); margin-top: 6px; }
+  .attn { border-radius: var(--r-md); padding: 14px; box-shadow: var(--shadow-glow-alert); background: var(--alert-bg); color: #ffd2cd; }
+  .dial { display: grid; place-items: center; }
+  .dial svg { width: 220px; height: 220px; }
+  .dial .needle { transform-origin: 110px 110px; transform: rotate(-20deg); transition: transform var(--dur-sweep) var(--ease-out); }
+  .toast { display: inline-block; padding: 9px 16px; border-radius: var(--r-pill); background: var(--bg-3); border: 1px solid var(--ok); }
+  .toast.err { border-color: var(--alert); }
+  .stack { display: grid; gap: 10px; } .inline { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>DNSwitch Design Kit</h1>
+    <p class="lead">Night instrument panel. Tokens from <code class="num">src/tokens.css</code>; spec in <code class="num">DESIGN.md</code>.</p>
+  </header>
+
+  <section>
+    <h2>Surfaces and text</h2>
+    <div class="grid cols-4">
+      <div class="sw" style="background:var(--bg-0)"><b>bg-0</b><span>#0a0c11</span></div>
+      <div class="sw" style="background:var(--bg-1)"><b>bg-1</b><span>#11141b</span></div>
+      <div class="sw" style="background:var(--bg-2)"><b>bg-2</b><span>#181c25</span></div>
+      <div class="sw" style="background:var(--bg-3)"><b>bg-3</b><span>#212633</span></div>
+      <div class="sw" style="background:var(--bg-4)"><b>bg-4</b><span>#2b3141</span></div>
+      <div class="sw" style="background:var(--ice);color:var(--ice-ink)"><b>ice (primary)</b><span>#e6f0ff</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Signals (one meaning each)</h2>
+    <div class="grid cols-4">
+      <div class="sw" style="background:var(--ok-bg);color:var(--ok)"><b>ok</b><span>#3ddc84 connected</span></div>
+      <div class="sw" style="background:var(--warn-bg);color:var(--warn)"><b>warn</b><span>#ffa94d caution</span></div>
+      <div class="sw" style="background:var(--alert-bg);color:var(--alert)"><b>alert</b><span>#ff5d4d error</span></div>
+      <div class="sw" style="background:var(--data-bg);color:var(--data)"><b>data</b><span>#4dd6e6 live</span></div>
+      <div class="sw" style="background:rgba(123,108,255,.14);color:var(--glow)"><b>glow</b><span>#7b6cff ambient</span></div>
+    </div>
+  </section>
+
+  <section class="grid cols-2">
+    <div class="card stack">
+      <h2>Type</h2>
+      <div class="num" style="font-size:40px;font-weight:600;line-height:1.1">8.8.8.8</div>
+      <div style="font-size:20px;font-weight:650">Title, sans 20</div>
+      <div>Body 14. Preset names and descriptions.</div>
+      <div class="label">Label 12 caps</div>
+      <div class="num" style="font-size:12px;color:var(--text-3)">192.168.1.1 · mono 12</div>
+    </div>
+    <div class="card stack">
+      <h2>Status chips</h2>
+      <div class="inline">
+        <span class="chip ok"><i></i>Automatic</span><span class="chip data"><i></i>Manual</span>
+        <span class="chip warn"><i></i>Slow</span><span class="chip alert"><i></i>Declined</span><span class="chip neutral">Unknown</span>
+      </div>
+      <h2 style="margin-top:10px">Buttons</h2>
+      <div class="inline"><button class="btn">Apply</button><button class="btn ghost">Save as preset</button><button class="btn sm ghost">+ New</button><button class="btn danger sm">Delete</button><button class="btn" disabled>Disabled</button></div>
+      <h2 style="margin-top:10px">Segmented</h2>
+      <div class="seg"><button class="on">Automatic</button><button>Manual</button></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Hero readout + dial + tiles</h2>
+    <div class="grid cols-2" style="align-items:center">
+      <div class="hero">
+        <span class="chip ok"><i></i>Manual · Connected to BatCave</span>
+        <div class="big num">1.1.1.1</div>
+        <div class="alt num">1.0.0.1</div>
+      </div>
+      <div class="dial">
+        <svg viewBox="0 0 220 220" role="img" aria-label="Latency 24 milliseconds">
+          <g fill="none" stroke-linecap="round">
+            <path d="M 40 170 A 88 88 0 1 1 180 170" stroke="var(--bg-3)" stroke-width="14"/>
+            <path d="M 40 170 A 88 88 0 0 1 68 52" stroke="var(--ice)" stroke-width="14"/>
+          </g>
+          <g stroke="var(--text-faint)" stroke-width="2">
+            <line x1="110" y1="28" x2="110" y2="38"/><line x1="40" y1="56" x2="47" y2="63"/><line x1="180" y1="56" x2="173" y2="63"/>
+          </g>
+          <line class="needle" x1="110" y1="110" x2="110" y2="40" stroke="var(--alert)" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="110" cy="110" r="6" fill="var(--bg-4)" stroke="var(--alert)" stroke-width="2"/>
+          <text x="110" y="150" text-anchor="middle" class="num" font-size="28" font-weight="600" fill="var(--text)">24</text>
+          <text x="110" y="168" text-anchor="middle" font-size="11" fill="var(--text-3)">ms latency</text>
+        </svg>
+      </div>
+    </div>
+    <div class="grid cols-2" style="margin-top:14px">
+      <div class="tile"><div class="top"><span class="label">Preferred</span><span class="arrow-ok">↓</span></div><div class="num val">1.1.1.1</div></div>
+      <div class="tile"><div class="top"><span class="label">Alternate</span><span class="arrow-warn">↑</span></div><div class="num val">1.0.0.1</div></div>
+    </div>
+  </section>
+
+  <section class="grid cols-2">
+    <div class="card stack">
+      <h2>Preset rows</h2>
+      <div class="row active"><div class="ico">◍</div><div class="info"><div class="nm">Cloudflare</div><div class="ips num">1.1.1.1 · 1.0.0.1</div></div>
+        <span class="bars"><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b></span><span class="pill-count"><i></i>ACTIVE</span></div>
+      <div class="row"><div class="ico">◍</div><div class="info"><div class="nm">Google</div><div class="ips num">8.8.8.8 · 8.8.4.4</div></div>
+        <span class="bars"><b class="on"></b><b class="on"></b><b class="on"></b><b></b><b></b></span></div>
+      <div class="row"><div class="ico">◍</div><div class="info"><div class="nm">Quad9</div><div class="ips num">9.9.9.9 · 149.112.112.112</div></div>
+        <span class="bars"><b class="on"></b><b class="on"></b><b></b><b></b><b></b></span></div>
+    </div>
+    <div class="card stack">
+      <h2>Inputs, feedback</h2>
+      <input class="f" placeholder="Preferred DNS server" value="1.1.1.1">
+      <div><input class="f bad" value="1.1.1.256"><div class="help">Not a valid IPv4 address.</div></div>
+      <div class="attn">Administrator rights are required to change DNS. Restart DNSwitch as administrator.</div>
+      <div class="inline"><span class="toast">Applied Cloudflare</span><span class="toast err">Administrator permission was declined.</span></div>
+    </div>
+  </section>
+</main>
+</body>
+</html>
