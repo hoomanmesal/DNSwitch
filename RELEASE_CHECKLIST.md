@@ -55,7 +55,7 @@ node tests/ui.test.js         # end to end; changes your real Wi-Fi DNS and rest
 npm run dist
 ```
 
-- Expect `dist/DNSwitch-<version>-setup.exe` and `dist/DNSwitch-<version>-portable.exe`, each about 70 MB. A jump of more than about 15 MB means something unintended was packaged; look at `dist/win-unpacked` before going on.
+- Expect `dist/DNSwitch-<version>-setup.exe` and `dist/DNSwitch-<version>-portable.exe`, each about 98 MB with Electron 44 (it was about 70 MB on Electron 33). A change of more than about 10 MB without an Electron update means something unintended was packaged; look at `dist/win-unpacked` before going on.
 - Do **not** add `"compression": "maximum"` to the build config: it crashed the installer and saved nothing.
 - Admin setting: `dist/win-unpacked/DNSwitch.exe` must contain `requireAdministrator` (the app asks for permission once at launch).
 - Test the **portable exe** with the same suites (kill stray processes between runs):
