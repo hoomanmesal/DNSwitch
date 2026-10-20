@@ -4,6 +4,16 @@ All notable changes to DNSwitch are recorded here. The format follows [Keep a Ch
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-10-20
+
+### Changed
+- Updated the bundled Electron runtime from 33 to 44 (current Chromium and security fixes). Electron 33 no longer receives security updates, and DNSwitch runs with administrator rights, so it should not stay on an unsupported engine.
+- Updated the build tooling (electron-builder 25 to 26).
+- Download size is larger because of the newer runtime: about 98 MB for the installer and portable exe (previously about 70 MB).
+
+### Fixed
+- The window-based tests no longer hang intermittently when another window covers the app (internal).
+
 ## [1.0.0] - 2026-10-20
 
 First release.
@@ -24,5 +34,6 @@ First release.
 - Changing DNS needs administrator rights. The behaviour on a PC with User Account Control enabled (a prompt per change) has not been tested.
 - The portable build is unsigned, so Windows SmartScreen may warn on first run.
 
-[Unreleased]: https://github.com/hoomanmesal/DNSwitch/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/hoomanmesal/DNSwitch/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/hoomanmesal/DNSwitch/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/hoomanmesal/DNSwitch/releases/tag/v1.0.0
