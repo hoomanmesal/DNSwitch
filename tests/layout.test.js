@@ -15,8 +15,17 @@ const check = (name, cond, extra) => {
   console.log((cond ? 'PASS ' : 'FAIL ') + name + (cond ? '' : '  -> ' + extra));
   if (!cond) failures++;
 };
-const setWindow = (w, h) =>
-  execFileSync('powershell', ['-NoProfile', '-File', path.join(__dirname, '..', 'tools', 'set-window.ps1'), String(w), String(h)]).toString().trim();
+// Resizes the real window and returns "WxH". Windows uses a helper script; elsewhere the page resizes its own window.
+let page;
+const setWindow = async (w, h) => {
+  if (process.platform === 'win32') {
+    return execFileSync('powershell', ['-NoProfile', '-File', path.join(__dirname, '..', 'tools', 'set-window.ps1'), String(w), String(h)]).toString().trim();
+  }
+  // Here resizeTo sets the content width; the title bar is taken out of the height.
+  await page.evaluate((w, h) => window.resizeTo(w, h), w, h);
+  await sleep(600);
+  return page.evaluate(() => `${innerWidth}x${innerHeight}`);
+};
 
 (async () => {
   // Keep the window rendering even when another window covers it (see tests/ui.test.js).
@@ -30,15 +39,20 @@ const setWindow = (w, h) =>
       try { browser = await puppeteer.connect({ browserURL: `http://127.0.0.1:${PORT}`, defaultViewport: null }); }
       catch { await sleep(500); }
     }
-    const page = (await browser.pages()).find((p) => p.url().includes('index.html'));
+    page = (await browser.pages()).find((p) => p.url().includes('index.html'));
     await sleep(5000); // a freshly downloaded exe can take a few seconds on first launch
 
     // Real window: the minimum is enforced, large sizes are accepted
-    let m = setWindow(300, 300).match(/(\d+)x(\d+)/);
-    check('window min size is exactly 440x560', +m[1] === 440 && +m[2] === 560, m[0]);
-    m = setWindow(1800, 1000).match(/(\d+)x(\d+)/);
-    check('large window accepted (1800x1000)', +m[1] === 1800 && +m[2] === 1000, m[0]);
-    setWindow(520, 720);
+    let m = (await setWindow(300, 300)).match(/(\d+)x(\d+)/);
+    if (process.platform === 'win32') {
+      check('window min size is exactly 440x560', +m[1] === 440 && +m[2] === 560, m[0]);
+    } else {
+      // Window size includes the title bar, so compare with what an exact 440x560 request gives.
+      check('window min size is exactly 440x560', m[0] === (await setWindow(440, 560)) && +m[1] === 440, m[0]);
+    }
+    m = (await setWindow(1800, 1000)).match(/(\d+)x(\d+)/);
+    check('large window accepted (1800x1000)', +m[1] === 1800 && (process.platform !== 'win32' || +m[2] === 1000), m[0]);
+    await setWindow(520, 720);
 
     const overflow = () => page.evaluate(() => {
       const vw = document.documentElement.clientWidth;

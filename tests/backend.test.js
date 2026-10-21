@@ -168,7 +168,7 @@ test('presets: corrupt file is quarantined and reseeded; empty list persists', (
   assert.strictEqual(new PresetStore(f).list().length, 0); // deleting all must not reseed
 });
 
-// Live tests change the real DNS of the Wi-Fi adapter, then restore it.
+// Live tests change the real DNS of the Wi-Fi interface, then restore it. Run: npm run test:live
 test('live: set manual, single server, reset to automatic', { skip: !process.env.LIVE }, async (t) => {
   assert.ok(await dns.isAdmin(), 'live tests need an elevated shell');
   const before = await dns.getState();
