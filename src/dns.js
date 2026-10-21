@@ -38,7 +38,7 @@ module.exports = {
   checkServers,
   getState: () => backend().getState(),
   isAdmin: () => backend().isAdmin(),
-  applyDns: (index, servers) => {
+  applyDns: async (index, servers) => {
     const idx = checkIndex(index);
     const list = checkServers(servers);
     return backend().applyDns(idx, list);
