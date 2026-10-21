@@ -85,7 +85,8 @@
       "syncDesktopName": true
     },
     "appImage": {
-      "artifactName": "DNSwitch-${version}-x86_64.${ext}"
+      "artifactName": "DNSwitch-${version}-x86_64.${ext}",
+      "executableArgs": []
     },
     "electronLanguages": [
       "en-US"
