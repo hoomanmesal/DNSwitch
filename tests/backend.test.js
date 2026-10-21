@@ -128,6 +128,8 @@ test('dns: validates before any backend, rejects unsupported platforms', async (
   t.after(() => Object.defineProperty(process, 'platform', real));
   Object.defineProperty(process, 'platform', { value: 'sunos' });
   await assert.rejects(dns.applyDns(1, ['1.1.1.1; reboot']), /not a valid/); // rejects, never throws synchronously
+  await assert.rejects(dns.applyDns(1, [['1.1.1.1']]), /one or two/); // no coercion of non-strings
+  await assert.rejects(dns.applyDns(1, [{ toString: () => '1.1.1.1' }]), /one or two/);
   assert.throws(() => dns.getState(), /does not support sunos/);
 });
 

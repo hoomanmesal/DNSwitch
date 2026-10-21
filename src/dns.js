@@ -16,7 +16,8 @@ function checkIndex(index) {
 function checkServers(servers) {
   if (servers === null) return null;
   if (!Array.isArray(servers)) throw new Error('Provide one or two DNS servers.');
-  const list = servers.map((s) => String(s).trim());
+  if (!servers.every((s) => typeof s === 'string')) throw new Error('Provide one or two DNS servers.');
+  const list = servers.map((s) => s.trim());
   if (list.length < 1 || list.length > 2) throw new Error('Provide one or two DNS servers.');
   for (const s of list) if (!isValidIPv4(s)) throw new Error(`"${s}" is not a valid IPv4 address.`);
   if (list.length === 2 && list[0] === list[1]) throw new Error('Preferred and alternate servers are identical.');
