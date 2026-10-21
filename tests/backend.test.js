@@ -4,6 +4,8 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 const dns = require('../src/dns');
+const win = require('../src/backends/windows');
+const linux = require('../src/backends/linux');
 const { PresetStore, DEFAULTS } = require('../src/presets');
 
 const tmpFile = () => path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'dnsw-')), 'presets.json');
@@ -17,15 +19,116 @@ test('isValidIPv4', () => {
   }
 });
 
-test('buildChangeScript validation', () => {
-  assert.throws(() => dns.buildChangeScript(19, []), /one or two/);
-  assert.throws(() => dns.buildChangeScript(19, ['1.1.1.1', '1.0.0.1', '8.8.8.8']), /one or two/);
-  assert.throws(() => dns.buildChangeScript(19, ['1.1.1.1', '1.1.1.1']), /identical/);
-  assert.throws(() => dns.buildChangeScript(19, ["1.1.1.1'; calc"]), /not a valid/);
-  assert.throws(() => dns.buildChangeScript('19; calc', ['1.1.1.1']), /Invalid adapter/);
-  assert.throws(() => dns.buildChangeScript(0, ['1.1.1.1']), /Invalid adapter/);
-  assert.match(dns.buildChangeScript(19, null), /-ResetServerAddresses/);
-  assert.match(dns.buildChangeScript(19, ['1.1.1.1']), /-ServerAddresses '1.1.1.1'/);
+test('windows: buildChangeScript validation', () => {
+  assert.throws(() => win.buildChangeScript(19, []), /one or two/);
+  assert.throws(() => win.buildChangeScript(19, ['1.1.1.1', '1.0.0.1', '8.8.8.8']), /one or two/);
+  assert.throws(() => win.buildChangeScript(19, ['1.1.1.1', '1.1.1.1']), /identical/);
+  assert.throws(() => win.buildChangeScript(19, ["1.1.1.1'; calc"]), /not a valid/);
+  assert.throws(() => win.buildChangeScript(19, '1.1.1.1'), /one or two/);
+  assert.throws(() => win.buildChangeScript('19; calc', ['1.1.1.1']), /Invalid network interface/);
+  assert.throws(() => win.buildChangeScript(0, ['1.1.1.1']), /Invalid network interface/);
+  assert.match(win.buildChangeScript(19, null), /-ResetServerAddresses/);
+  assert.match(win.buildChangeScript(19, ['1.1.1.1']), /-ServerAddresses '1.1.1.1'/);
+});
+
+// Mocked nmcli: maps the joined argument list to canned output and records every call.
+function mockLinux(t, out, ifindexes = { wlp2s0: 3, enp3s0: 2 }) {
+  const calls = [];
+  const orig = { ...linux.deps };
+  linux.deps.nmcli = async (args) => {
+    assert.ok(Array.isArray(args) && args.every((a) => typeof a === 'string'), 'args must be a string array');
+    calls.push(args);
+    const key = args.join(' ');
+    if (out[key] instanceof Error) throw out[key];
+    return key in out ? out[key] : '';
+  };
+  linux.deps.ifindex = (dev) => ifindexes[dev];
+  t.after(() => Object.assign(linux.deps, orig));
+  return calls;
+}
+
+const WIFI_UUID = '6f1c3b7e-2d4a-4c1e-9a7b-1f2e3d4c5b6a';
+const ETH_UUID = '0a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d';
+const NM = {
+  '-t -f UUID,DEVICE connection show --active': `${WIFI_UUID}:wlp2s0\n${ETH_UUID}:enp3s0\n11111111-2222-4333-8444-555555555555:lo`,
+  '-t -f DEVICE,TYPE,STATE device status':
+    'wlp2s0:wifi:connected\nenp3s0:ethernet:connected\ndocker0:bridge:connected (externally)\nlo:loopback:connected (externally)\nwlp0:wifi-p2p:disconnected',
+  [`-t -f connection.id,ipv4.dns,802-11-wireless.ssid connection show ${WIFI_UUID}`]:
+    'connection.id:Cafe\\: Guest\nipv4.dns:1.1.1.1,1.0.0.1\n802-11-wireless.ssid:Cafe: Guest',
+  [`-t -f connection.id,ipv4.dns connection show ${ETH_UUID}`]: 'connection.id:Wired connection 1\nipv4.dns:',
+  '-t -f IP4.DNS device show wlp2s0': 'IP4.DNS[1]:1.1.1.1\nIP4.DNS[2]:1.0.0.1',
+  '-t -f IP4.DNS device show enp3s0': 'IP4.DNS[1]:192.168.1.1',
+};
+
+test('linux: splitTerse handles escapes', () => {
+  assert.deepStrictEqual(linux.splitTerse('a\\:b:c\\\\d:'), ['a:b', 'c\\d', '']);
+});
+
+test('linux: getState parses nmcli output', async (t) => {
+  mockLinux(t, NM);
+  const s = await linux.getState();
+  assert.strictEqual(s.ssid, 'Cafe: Guest');
+  assert.deepStrictEqual(s.adapters, [
+    { name: 'wlp2s0', index: 3, description: 'Cafe: Guest', isWifi: true, mode: 'manual', servers: ['1.1.1.1', '1.0.0.1'] },
+    { name: 'enp3s0', index: 2, description: 'Wired connection 1', isWifi: false, mode: 'auto', servers: ['192.168.1.1'] },
+  ]);
+});
+
+test('linux: getState skips unsafe device names and uuids', async (t) => {
+  mockLinux(t, {
+    '-t -f UUID,DEVICE connection show --active': `${WIFI_UUID}:-evil\nnot-a-uuid:enp3s0\n${ETH_UUID}:eth0/../x`,
+    '-t -f DEVICE,TYPE,STATE device status': '-evil:wifi:connected\nenp3s0:ethernet:connected\neth0/../x:ethernet:connected',
+  });
+  assert.deepStrictEqual((await linux.getState()).adapters, []);
+});
+
+test('linux: applyDns sets manual servers by uuid as an argument array', async (t) => {
+  const calls = mockLinux(t, NM);
+  await linux.applyDns(2, ['9.9.9.9', ' 149.112.112.112 ']);
+  assert.deepStrictEqual(calls.slice(-2), [
+    ['connection', 'modify', ETH_UUID, 'ipv4.dns', '9.9.9.9,149.112.112.112', 'ipv4.ignore-auto-dns', 'yes'],
+    ['device', 'reapply', 'enp3s0'],
+  ]);
+});
+
+test('linux: applyDns(null) resets to automatic', async (t) => {
+  const calls = mockLinux(t, NM);
+  await linux.applyDns(3, null);
+  assert.deepStrictEqual(calls.slice(-2), [
+    ['connection', 'modify', WIFI_UUID, 'ipv4.dns', '', 'ipv4.ignore-auto-dns', 'no'],
+    ['device', 'reapply', 'wlp2s0'],
+  ]);
+});
+
+test('linux: applyDns rejects bad input before running any change', async (t) => {
+  const calls = mockLinux(t, NM);
+  await assert.rejects(linux.applyDns(2, ['1.1.1.1,8.8.8.8']), /not a valid/);
+  await assert.rejects(linux.applyDns(2, ['1.1.1.1 ipv4.method disabled']), /not a valid/);
+  await assert.rejects(linux.applyDns(2, ['1.1.1.1', '1.1.1.1']), /identical/);
+  await assert.rejects(linux.applyDns('2; reboot', ['1.1.1.1']), /Invalid network interface/);
+  await assert.rejects(linux.applyDns(-1, ['1.1.1.1']), /Invalid network interface/);
+  await assert.rejects(linux.applyDns(99, ['1.1.1.1']), /not found/);
+  assert.ok(!calls.some((a) => a[1] === 'modify' || a[1] === 'reapply'), 'no change command may run');
+});
+
+test('linux: permission and missing-nmcli errors are readable', async (t) => {
+  mockLinux(t, { ...NM, [`connection modify ${ETH_UUID} ipv4.dns 1.1.1.1 ipv4.ignore-auto-dns yes`]:
+    new Error("Error: Failed to modify connection 'Wired connection 1': Insufficient privileges") });
+  await assert.rejects(linux.applyDns(2, ['1.1.1.1']), /Permission to change network settings/);
+});
+
+test('linux: isAdmin reads NetworkManager permissions', async (t) => {
+  mockLinux(t, { '-t -f PERMISSION,VALUE general permissions':
+    'org.freedesktop.NetworkManager.network-control:yes\norg.freedesktop.NetworkManager.settings.modify.system:auth' });
+  assert.strictEqual(await linux.isAdmin(), false);
+});
+
+test('dns: validates before any backend, rejects unsupported platforms', async (t) => {
+  const real = Object.getOwnPropertyDescriptor(process, 'platform');
+  t.after(() => Object.defineProperty(process, 'platform', real));
+  Object.defineProperty(process, 'platform', { value: 'sunos' });
+  assert.throws(() => dns.applyDns(1, ['1.1.1.1; reboot']), /not a valid/);
+  assert.throws(() => dns.getState(), /does not support sunos/);
 });
 
 test('presets: seeding, persistence', () => {

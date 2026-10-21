@@ -10,14 +10,14 @@ Only the latest release receives fixes.
 
 Please do not open a public issue for a security problem.
 
-Report it privately through GitHub: open the repository's **Security** tab and choose **Report a vulnerability** (https://github.com/hoomanmesal/DNSwitch/security/advisories/new). Include what you found, the steps to reproduce it, the version of DNSwitch and your Windows version.
+Report it privately through GitHub: open the repository's **Security** tab and choose **Report a vulnerability** (https://github.com/hoomanmesal/DNSwitch/security/advisories/new). Include what you found, the steps to reproduce it, the version of DNSwitch and your operating system version.
 
 You can expect an acknowledgement within a few days and a fix or a decision as soon as it is reasonable. You will be credited in the release notes unless you prefer not to be.
 
 ## What is in scope
 
-- Running unintended commands through the PowerShell calls (command injection via DNS values, adapter names or preset names)
-- Changing DNS on an adapter the user did not choose
+- Running unintended commands through the PowerShell or `nmcli` calls (command or argument injection via DNS values, network interface names, connection names or preset names)
+- Changing DNS on a network interface the user did not choose
 - Ways to make the app write outside its own settings folder
 - Problems in the release build or its checksums
 

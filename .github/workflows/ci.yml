@@ -44,3 +44,31 @@ jobs:
             dist/*-portable.exe
           retention-days: 7
           if-no-files-found: error
+
+  linux-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Unit tests
+        run: npm test
+
+      - name: Build AppImage
+        run: npm run dist:linux -- --publish never
+
+      - name: Keep the build for review
+        uses: actions/upload-artifact@v7
+        with:
+          name: DNSwitch-linux-build
+          path: dist/*.AppImage
+          retention-days: 7
+          if-no-files-found: error

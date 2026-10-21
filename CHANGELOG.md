@@ -4,6 +4,12 @@ All notable changes to DNSwitch are recorded here. The format follows [Keep a Ch
 
 ## [Unreleased]
 
+### Added
+- Linux version (AppImage, x64) for systems that use NetworkManager. Shows and switches DNS for the active network interface; NetworkManager asks for your password when needed. (Linux)
+
+### Changed
+- Messages say "network interface" instead of "adapter", for example "No active network interfaces". (Windows, Linux)
+
 ## [1.0.1] - 2026-10-20
 
 ### Changed

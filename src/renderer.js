@@ -76,8 +76,8 @@ function render() {
   $('ssid').textContent = c
     ? (c.isWifi && state.ssid ? 'Connected to ' + state.ssid : c.description)
     : 'No active network connection';
-  if (!hasAdapter) banner('No active network adapters. Connect to a network and refresh.');
-  else if (!wifi) banner('No connected Wi-Fi adapter found - showing another active adapter.');
+  if (!hasAdapter) banner('No active network interfaces. Connect to a network and refresh.');
+  else if (!wifi) banner('No Wi-Fi connection found - showing another active network interface.');
   else banner('');
 
   const chip = $('mode');
@@ -169,7 +169,7 @@ async function refresh(quiet) {
 
 async function apply(servers, label) {
   const c = current();
-  if (!c) return toast('No adapter selected.', true);
+  if (!c) return toast('No network interface selected.', true);
   gen++;
   try {
     state = await call(window.api.applyDns(c.index, servers),

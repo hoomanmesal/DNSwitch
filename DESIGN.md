@@ -142,8 +142,8 @@ Single column, max content width 560, 16px gutters at min width, no horizontal s
 - **Loading:** hero readout shows "--" and a skeleton shimmer; busy overlay appears only for user-initiated actions, never background refresh.
 - **Automatic:** chip "Automatic (DHCP)", readout shows the DHCP-provided servers.
 - **Manual:** chip "Manual", active preset highlighted if servers match exactly.
-- **Error:** toast plus, for blocking errors, banner. Plain language: "Administrator rights are required to change DNS. Restart DNSwitch as administrator." / "Administrator permission was declined."
-- **No adapter:** banner "No active network adapters. Connect to a network and refresh." Controls disabled.
+- **Error:** toast plus, for blocking errors, banner. Plain language: "Administrator rights are required to change DNS. Restart DNSwitch as administrator." / "Administrator permission was declined." On Linux: "Permission to change network settings was declined or is not allowed for this account."
+- **No network interface:** banner "No active network interfaces. Connect to a network and refresh." Controls disabled.
 - **Empty presets:** "No presets yet. Click + New to add one."
 - **Voice:** short, literal, no exclamation marks.
 
