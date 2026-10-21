@@ -22,8 +22,8 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   // Keep the window rendering even when another window covers it; Windows otherwise pauses occluded windows and CDP actions hang.
   const flags = [`--remote-debugging-port=${PORT}`, `--user-data-dir=${userData}`, '--disable-features=CalculateNativeWinOcclusion', '--disable-backgrounding-occluded-windows', '--disable-renderer-backgrounding'];
   const proc = process.env.APP_EXE
-    ? spawn(process.env.APP_EXE, flags, { stdio: 'ignore' })
-    : spawn(electron, ['.', ...flags], { cwd: path.join(__dirname, '..'), stdio: 'ignore' });
+    ? spawn(process.env.APP_EXE, flags, { stdio: 'ignore', detached: process.platform !== 'win32' })
+    : spawn(electron, ['.', ...flags], { cwd: path.join(__dirname, '..'), stdio: 'ignore', detached: process.platform !== 'win32' });
   const before = await dns.getState();
   const wifi = before.adapters.find((a) => a.isWifi);
   let browser;
@@ -188,7 +188,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
     failures++;
   } finally {
     try { if (browser) await browser.disconnect(); } catch {}
-    proc.kill();
+    try { process.platform === 'win32' ? proc.kill() : process.kill(-proc.pid); } catch {} // whole group: the AppImage starts child processes
     if (process.env.APP_EXE) { try { require('child_process').execSync('taskkill /F /IM "DNSwitch*.exe" /T', { stdio: 'ignore' }); } catch {} }
     // restore original DNS
     if (wifi) await dns.applyDns(wifi.index, wifi.mode === 'manual' ? wifi.servers : null);

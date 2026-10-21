@@ -31,8 +31,8 @@ const setWindow = async (w, h) => {
   // Keep the window rendering even when another window covers it (see tests/ui.test.js).
   const flags = [`--remote-debugging-port=${PORT}`, `--user-data-dir=${path.join(os.tmpdir(), 'dnsw-layout-ud')}`, '--disable-features=CalculateNativeWinOcclusion', '--disable-backgrounding-occluded-windows', '--disable-renderer-backgrounding'];
   const proc = process.env.APP_EXE
-    ? spawn(process.env.APP_EXE, flags, { stdio: 'ignore' })
-    : spawn(electron, ['.', ...flags], { cwd: path.join(__dirname, '..'), stdio: 'ignore' });
+    ? spawn(process.env.APP_EXE, flags, { stdio: 'ignore', detached: process.platform !== 'win32' })
+    : spawn(electron, ['.', ...flags], { cwd: path.join(__dirname, '..'), stdio: 'ignore', detached: process.platform !== 'win32' });
   let browser;
   try {
     for (let i = 0; i < 40 && !browser; i++) {
@@ -141,7 +141,7 @@ const setWindow = async (w, h) => {
     failures++;
   } finally {
     try { if (browser) await browser.disconnect(); } catch {}
-    proc.kill();
+    try { process.platform === 'win32' ? proc.kill() : process.kill(-proc.pid); } catch {} // whole group: the AppImage starts child processes
     if (process.env.APP_EXE) { try { execFileSync('taskkill', ['/F', '/IM', 'DNSwitch*.exe', '/T'], { stdio: 'ignore' }); } catch {} }
     console.log(failures ? `\n${failures} FAILED` : '\nALL PASSED');
     process.exit(failures ? 1 : 0);
