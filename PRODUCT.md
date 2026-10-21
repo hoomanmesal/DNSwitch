@@ -31,7 +31,7 @@ Confirmed by the user as all three together: (1) instant one-click presets in a 
 Built and tested today:
 - Shows connected Wi-Fi name, adapter, mode (Automatic/Manual) and preferred/alternate IPv4 servers; refreshes every 8 seconds.
 - Presets: Google, Cloudflare, Quad9, OpenDNS seeded; add, edit, delete; active preset highlighted.
-- Custom IPv4 servers (alternate optional); "Set automatically (DHCP)".
+- Custom IPv4 servers (alternate optional); "Reset to automatic DNS".
 - Packaged as a portable `.exe` (`npm run dist`).
 
 Known facts and limits: IPv4 DNS only; a DNS change takes about 5 seconds to apply; the app has no network calls of its own.

@@ -45,7 +45,7 @@ node tests/ui.test.js         # end to end; changes your real Wi-Fi DNS and rest
   ```powershell
   Get-DnsClientServerAddress -InterfaceAlias "Wi-Fi" -AddressFamily IPv4
   ```
-  To return to automatic: `node -e "require('./src/dns').applyDns(<ifIndex>, null)"` or use the app's "Set automatically" button.
+  To return to automatic: `node -e "require('./src/dns').applyDns(<ifIndex>, null)"` or use the app's "Reset to automatic DNS" button.
 - A test that fails once and passes on a clean rerun is a flake; note it. A test that fails twice is a bug: fix it before releasing.
 - Optional but useful: `LIVE=1 node --test tests/backend.test.js` runs the backend against the real adapter.
 

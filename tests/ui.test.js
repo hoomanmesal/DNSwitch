@@ -61,7 +61,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
     check('ssid shown', (await txt('#ssid')).includes(before.ssid || wifi.description), await txt('#ssid'));
     check('Wi-Fi adapter selected by default', (await page.$eval('#adapter', (e) => e.selectedOptions[0].textContent)).includes('Wi-Fi'));
     check('current servers match system', (await txt('#cur1')) === (wifi.servers[0] || '—'), await txt('#cur1'));
-    check('mode badge matches', (await txt('#mode')) === (wifi.mode === 'auto' ? 'Automatic (DHCP)' : 'Manual'));
+    check('mode badge matches', (await txt('#mode')) === (wifi.mode === 'auto' ? 'Automatic' : 'Manual'));
     check('4 default presets', (await presetNames()).join() === 'Google,Cloudflare,Quad9,OpenDNS', (await presetNames()).join());
 
     // --- Apply preset
@@ -161,7 +161,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
     await page.click('#auto'); await waitIdle(); await sleep(800);
     s = (await dns.getState()).adapters.find((a) => a.index === wifi.index);
     check('automatic: system back to DHCP', s.mode === 'auto' && s.servers.length > 0, JSON.stringify(s));
-    check('automatic: UI badge', (await txt('#mode')) === 'Automatic (DHCP)');
+    check('automatic: UI badge', (await txt('#mode')) === 'Automatic');
     check('automatic: button disabled', await page.$eval('#auto', (b) => b.disabled));
     check('automatic: no ACTIVE preset', (await page.$$eval('#presets li.active', (e) => e.length)) === 0);
 

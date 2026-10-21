@@ -83,7 +83,7 @@ function render() {
   const chip = $('mode');
   chip.className = 'chip ' + (hasAdapter ? (c.mode === 'auto' ? 'auto' : 'manual') : 'neutral');
   const dot = document.createElement('i');
-  chip.replaceChildren(dot, document.createTextNode(hasAdapter ? (c.mode === 'auto' ? 'Automatic (DHCP)' : 'Manual') : '—'));
+  chip.replaceChildren(dot, document.createTextNode(hasAdapter ? (c.mode === 'auto' ? 'Automatic' : 'Manual') : '—'));
   setText($('cur1'), (hasAdapter && c.servers[0]) || '—');
   setText($('cur2'), (hasAdapter && c.servers[1]) || '—');
   $('auto').disabled = !hasAdapter || c.mode === 'auto';
@@ -176,7 +176,7 @@ async function apply(servers, label) {
       servers ? 'Applying DNS...' : 'Resetting to automatic...');
     gen++;
     render();
-    toast(servers ? 'Applied ' + (label || servers.join(', ')) : 'DNS set to automatic');
+    toast(servers ? 'Applied ' + (label || servers.join(', ')) : 'DNS reset to automatic');
   } catch (e) {
     toast(e.message, true);
     refresh(true);
