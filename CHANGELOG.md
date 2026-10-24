@@ -11,10 +11,10 @@ All notable changes to DNSwitch are recorded here. The format follows [Keep a Ch
 - The button that returns DNS to the network's own servers now reads "Reset to automatic DNS", and the status chip reads "Automatic" instead of "Automatic (DHCP)". (Windows, Linux)
 - Messages say "network interface" instead of "adapter", for example "No active network interfaces". (Windows, Linux)
 
-## [1.0.1] - 2026-10-20
-
 ### Fixed
 - The app no longer downloads a spellcheck dictionary from Google on first start, so it makes no network connections. (Linux, Windows)
+
+## [1.0.1] - 2026-10-20
 
 ### Changed
 - Updated the bundled Electron runtime from 33 to 44 (current Chromium and security fixes). Electron 33 no longer receives security updates, and DNSwitch runs with administrator rights, so it should not stay on an unsupported engine.
