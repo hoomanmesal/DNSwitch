@@ -13,6 +13,9 @@ All notable changes to DNSwitch are recorded here. The format follows [Keep a Ch
 
 ## [1.0.1] - 2026-10-20
 
+### Fixed
+- The app no longer downloads a spellcheck dictionary from Google on first start, so it makes no network connections. (Linux, Windows)
+
 ### Changed
 - Updated the bundled Electron runtime from 33 to 44 (current Chromium and security fixes). Electron 33 no longer receives security updates, and DNSwitch runs with administrator rights, so it should not stay on an unsupported engine.
 - Updated the build tooling (electron-builder 25 to 26).
