@@ -42,7 +42,7 @@ The AppImage is not added to your applications menu by itself, so GNOME shows a 
 **Windows SmartScreen:** the app is not code-signed yet, so Windows may show "Windows protected your PC". Choose **More info**, then **Run anyway**. You can compare the file's checksum with `SHA256SUMS.txt` first:
 
 ```powershell
-Get-FileHash .\DNSwitch-1.0.0-setup.exe -Algorithm SHA256
+Get-FileHash .\DNSwitch-1.1.0-setup.exe -Algorithm SHA256
 ```
 
 ## Run from source

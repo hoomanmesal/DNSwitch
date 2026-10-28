@@ -4,6 +4,8 @@ All notable changes to DNSwitch are recorded here. The format follows [Keep a Ch
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-10-28
+
 ### Added
 - Linux version for systems that use NetworkManager, as a .deb package (adds DNSwitch to the applications menu with its icon) and an AppImage, both x64. Shows and switches DNS for the active network interface; NetworkManager asks for your password when needed. (Linux)
 
@@ -48,6 +50,7 @@ First release.
 - Changing DNS needs administrator rights. The behaviour on a PC with User Account Control enabled (a prompt per change) has not been tested.
 - The portable build is unsigned, so Windows SmartScreen may warn on first run.
 
-[Unreleased]: https://github.com/hoomanmesal/DNSwitch/compare/v1.0.1...HEAD
+[Unreleased]: https://github.com/hoomanmesal/DNSwitch/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/hoomanmesal/DNSwitch/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/hoomanmesal/DNSwitch/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/hoomanmesal/DNSwitch/releases/tag/v1.0.0
