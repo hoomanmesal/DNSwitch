@@ -12,6 +12,7 @@ All notable changes to DNSwitch are recorded here. The format follows [Keep a Ch
 - Messages say "network interface" instead of "adapter", for example "No active network interfaces". (Windows, Linux)
 
 ### Fixed
+- At 200% zoom in the smallest window, the page no longer scrolls sideways: preset rows wrap and the DNS address breaks across lines. (Windows, Linux)
 - On a computer with only a wired connection, the app no longer shows a red "No Wi-Fi connection found" warning. (Windows, Linux)
 - The interface selector shows an Ethernet icon, instead of the Wi-Fi icon, when a wired connection is selected. (Windows, Linux)
 - The app no longer downloads a spellcheck dictionary from Google on first start, so it makes no network connections. (Linux, Windows)

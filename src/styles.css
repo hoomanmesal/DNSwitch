@@ -165,5 +165,14 @@ dialog .title { margin: 0; font-size: var(--fs-title); font-weight: 650; }
   .actions:not(.end) { flex-direction: column; }
   .actions:not(.end) .primary { flex: none; }
 }
+/* Very narrow content (about 200% zoom at the minimum window): preset rows wrap and the readout may shrink, so nothing forces a sideways scroll */
+@media (max-width: 300px) {
+  .presets li { flex-wrap: wrap; row-gap: var(--s-2); }
+  .presets li .ico { display: none; }
+  .presets li .info { flex: 1 1 100%; }
+  .presets li .mini:not(.del) { margin-left: auto; }
+  .readout { grid-template-columns: minmax(0, 1fr); }
+  .readout .secondary { overflow-wrap: anywhere; }
+}
 @media (prefers-reduced-motion: reduce) { .readout .tick, .spin, .icon-btn.spinning .ic { animation: none; } }
 .adapter select { flex: 1 1 auto; min-width: 0; }
