@@ -82,6 +82,13 @@ test('linux: getState skips unsafe device names and uuids', async (t) => {
   assert.deepStrictEqual((await linux.getState()).adapters, []);
 });
 
+test('linux: getState skips an interface that vanished before its ifindex was read', async (t) => {
+  mockLinux(t, NM);
+  const real = linux.deps.ifindex;
+  linux.deps.ifindex = (dev) => { if (dev === 'wlp2s0') throw new Error('ENOENT'); return real(dev); };
+  assert.deepStrictEqual((await linux.getState()).adapters.map((a) => a.name), ['enp3s0']);
+});
+
 test('linux: applyDns sets manual servers by uuid as an argument array', async (t) => {
   const calls = mockLinux(t, NM);
   await linux.applyDns(2, ['9.9.9.9', ' 149.112.112.112 ']);

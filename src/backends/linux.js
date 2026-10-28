@@ -59,7 +59,9 @@ async function listInterfaces() {
   for (const [dev, type, st] of rows(await deps.nmcli(['-t', '-f', 'DEVICE,TYPE,STATE', 'device', 'status']))) {
     // "connected (externally)" devices are not configured by NetworkManager, so changes would not stick.
     if (st !== 'connected' || type === 'loopback' || !DEVICE.test(dev) || !active.has(dev)) continue;
-    out.push({ dev, type, uuid: active.get(dev), index: deps.ifindex(dev) });
+    let index;
+    try { index = deps.ifindex(dev); } catch { continue; } // the device vanished since nmcli listed it
+    out.push({ dev, type, uuid: active.get(dev), index });
   }
   return out;
 }

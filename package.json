@@ -92,8 +92,7 @@
       "syncDesktopName": true
     },
     "appImage": {
-      "artifactName": "DNSwitch-${version}-x86_64.${ext}",
-      "executableArgs": []
+      "artifactName": "DNSwitch-${version}-x86_64.${ext}"
     },
     "deb": {
       "artifactName": "DNSwitch-${version}-amd64.${ext}"
