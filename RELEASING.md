@@ -9,7 +9,7 @@ Releases use [Semantic Versioning](https://semver.org/): `MAJOR.MINOR.PATCH`.
 
 Do the work in [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md) first; this file covers the tagging mechanics.
 
-A release is a git tag `vX.Y.Z`. Pushing the tag builds the installer and the portable exe on GitHub and attaches them, with checksums, to a **draft** release. Nothing is public until you press Publish.
+A release is a git tag `vX.Y.Z`. Pushing the tag builds the Windows installer and portable exe and the Linux AppImage and .deb on GitHub and attaches them, with checksums, to a **draft** release. Nothing is public until you press Publish.
 
 ## Steps
 
@@ -33,7 +33,7 @@ A release is a git tag `vX.Y.Z`. Pushing the tag builds the installer and the po
    git push origin vX.Y.Z
    ```
 6. Open the **Actions** tab and wait for the **Release** run. It fails early if the tag does not match `package.json` or if `CHANGELOG.md` has no section for the version.
-7. Open **Releases**, open the draft, and check: the notes read well, the three files are attached (`*-setup.exe`, `*-portable.exe`, `SHA256SUMS.txt`), and download plus run the installer once.
+7. Open **Releases**, open the draft, and check: the notes read well, the five files are attached (`*-setup.exe`, `*-portable.exe`, `*.AppImage`, `*.deb`, `SHA256SUMS.txt`), and download plus run the installer once on Windows and the .deb once on Linux.
 8. Press **Publish release**.
 
 ## If something is wrong
@@ -53,6 +53,8 @@ Each release includes `SHA256SUMS.txt`. Compare it with:
 ```powershell
 Get-FileHash .\DNSwitch-X.Y.Z-setup.exe -Algorithm SHA256
 ```
+
+On Linux: `sha256sum -c --ignore-missing SHA256SUMS.txt`
 
 ## Not set up yet
 

@@ -62,13 +62,15 @@ jobs:
       - name: Unit tests
         run: npm test
 
-      - name: Build AppImage
+      - name: Build AppImage and .deb
         run: npm run dist:linux -- --publish never
 
       - name: Keep the build for review
         uses: actions/upload-artifact@v7
         with:
           name: DNSwitch-linux-build
-          path: dist/*.AppImage
+          path: |
+            dist/*.AppImage
+            dist/*.deb
           retention-days: 7
           if-no-files-found: error

@@ -25,12 +25,19 @@ Requires Windows 10 or 11 (64-bit). DNSwitch asks for administrator permission w
 
 ### Linux
 
-Linux builds are an AppImage (`DNSwitch-<version>-x86_64.AppImage`). They need NetworkManager (`nmcli`), which most desktop distributions use. DNSwitch changes DNS through NetworkManager, so your system may ask for your password when you apply a change; the app itself does not run as root.
+DNSwitch on Linux needs NetworkManager (`nmcli`), which most desktop distributions use. It changes DNS through NetworkManager, so your system may ask for your password when you apply a change; the app itself does not run as root.
+
+| File | What it is |
+|---|---|
+| `DNSwitch-<version>-amd64.deb` | Package for Ubuntu, Debian, Mint and other Debian-based systems. Adds DNSwitch to your applications menu with its icon. |
+| `DNSwitch-<version>-x86_64.AppImage` | Single file, no install, for any distribution. |
 
 ```
-chmod +x DNSwitch-*.AppImage
-./DNSwitch-*.AppImage
+sudo apt install ./DNSwitch-*-amd64.deb       # .deb
+chmod +x DNSwitch-*.AppImage && ./DNSwitch-*.AppImage   # AppImage
 ```
+
+The AppImage is not added to your applications menu by itself, so GNOME shows a generic icon in the dock. Use the .deb, or add the AppImage with a tool such as Gear Lever, to get the DNSwitch icon.
 
 **Windows SmartScreen:** the app is not code-signed yet, so Windows may show "Windows protected your PC". Choose **More info**, then **Run anyway**. You can compare the file's checksum with `SHA256SUMS.txt` first:
 
@@ -56,7 +63,7 @@ npm run test:layout      # window min size, overflow at 7 sizes + zoom, stress c
 APP_EXE=<path to exe>    # set this env var to run either UI test against a packaged app
 ```
 
-On Linux, `sudo LIVE=1 node --test tests/backend.test.js` runs the live backend test (changes then restores the DNS of the active Wi-Fi connection).
+On Linux, `npm run test:live` runs the live backend test (changes then restores the DNS of the active Wi-Fi connection).
 
 ## Build
 
@@ -64,7 +71,16 @@ On Linux, `sudo LIVE=1 node --test tests/backend.test.js` runs the live backend 
 npm run dist
 ```
 
-Produces the installer and the portable exe in `dist/`. On Linux, `npm run dist:linux` builds the AppImage. Releases are built by GitHub Actions; see [RELEASING.md](RELEASING.md).
+Produces the installer and the portable exe in `dist/`. On Linux, `npm run dist:linux` builds the AppImage and the .deb.
+
+Running from source on Ubuntu 24.04 or later: if `npm start` stops with "The SUID sandbox helper binary was found, but is not configured correctly", give Electron's sandbox helper the owner it needs (again after each `npm install` that downloads Electron):
+
+```
+sudo chown root:root node_modules/electron/dist/chrome-sandbox
+sudo chmod 4755 node_modules/electron/dist/chrome-sandbox
+```
+
+Do not use `--no-sandbox` instead. Releases are built by GitHub Actions; see [RELEASING.md](RELEASING.md).
 
 ## Project docs
 

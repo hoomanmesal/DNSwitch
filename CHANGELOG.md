@@ -5,7 +5,7 @@ All notable changes to DNSwitch are recorded here. The format follows [Keep a Ch
 ## [Unreleased]
 
 ### Added
-- Linux version (AppImage, x64) for systems that use NetworkManager. Shows and switches DNS for the active network interface; NetworkManager asks for your password when needed. (Linux)
+- Linux version for systems that use NetworkManager, as a .deb package (adds DNSwitch to the applications menu with its icon) and an AppImage, both x64. Shows and switches DNS for the active network interface; NetworkManager asks for your password when needed. (Linux)
 
 ### Changed
 - The button that returns DNS to the network's own servers now reads "Reset to automatic DNS", and the status chip reads "Automatic" instead of "Automatic (DHCP)". (Windows, Linux)
