@@ -32,22 +32,25 @@ body:
     attributes:
       label: Which build are you using?
       options:
-        - Installer (setup.exe)
-        - Portable exe
+        - Installer (setup.exe, Windows)
+        - Portable exe (Windows)
+        - .deb package (Linux)
+        - AppImage (Linux)
         - Run from source (npm start)
     validations:
       required: true
   - type: input
-    id: windows
+    id: os
     attributes:
-      label: Windows version
-      placeholder: "Windows 11 23H2"
+      label: Operating system and version
+      description: On Linux, include the desktop (GNOME, KDE, ...) and whether it is Wayland or X11.
+      placeholder: "Windows 11 23H2, or Ubuntu 24.04 GNOME Wayland"
     validations:
       required: true
   - type: dropdown
     id: uac
     attributes:
-      label: Is User Account Control (the permission prompt) turned on?
+      label: On Windows, is User Account Control (the permission prompt) turned on?
       options:
         - "Yes"
         - "No"
@@ -56,4 +59,4 @@ body:
     id: extra
     attributes:
       label: Anything else
-      description: Screenshots, the error message shown in the app, or your adapter type (Wi-Fi, Ethernet, VPN). Remove any IP addresses you do not want to share.
+      description: Screenshots, the error message shown in the app, or your connection type (Wi-Fi, Ethernet, VPN). Remove any IP addresses you do not want to share.

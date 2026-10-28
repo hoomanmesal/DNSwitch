@@ -72,12 +72,11 @@ function render() {
   if (hasAdapter) ad.value = c.index;
   ad.disabled = state.adapters.length < 2;
 
-  const wifi = state.adapters.find((a) => a.isWifi);
+  document.querySelector('.adapter use').setAttribute('href', c && !c.isWifi ? '#i-ethernet' : '#i-wifi');
   $('ssid').textContent = c
     ? (c.isWifi && state.ssid ? 'Connected to ' + state.ssid : c.description)
     : 'No active network connection';
   if (!hasAdapter) banner('No active network interfaces. Connect to a network and refresh.');
-  else if (!wifi) banner('No Wi-Fi connection found - showing another active network interface.');
   else banner('');
 
   const chip = $('mode');

@@ -54,6 +54,12 @@ npm start
 
 Start it from an elevated terminal (Run as administrator), otherwise Windows asks for permission on each change.
 
+## Limits
+
+- IPv4 DNS only. If your router also hands out IPv6 DNS servers, your system can still use those; DNSwitch does not change them.
+- A VPN that pushes its own DNS servers can override the servers you set.
+- On Linux, DNSwitch needs NetworkManager. Systems that only use systemd-networkd or other tools are not supported yet.
+
 ## Test
 
 ```

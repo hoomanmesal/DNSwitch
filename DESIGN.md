@@ -1,6 +1,6 @@
 # DNSwitch Design System
 
-Dark, instrument-panel UI for a small Windows utility that shows and switches DNS. Derived from five network-monitoring references (see [design/references.md](design/references.md)). Tokens live in [src/tokens.css](src/tokens.css); a live component kit is in [design/kit.html](design/kit.html).
+Dark, instrument-panel UI for a small desktop utility (Windows, Linux) that shows and switches DNS. Derived from five network-monitoring references (see [design/references.md](design/references.md)). Tokens live in [src/tokens.css](src/tokens.css); a live component kit is in [design/kit.html](design/kit.html).
 
 > Status: applied to the app (`src/styles.css`, `src/index.html`). Not yet built: the latency dial and signal bars (need a DNS probe) and the Automatic | Manual segmented control; the app uses the ghost "Reset to automatic DNS" button instead.
 
@@ -71,7 +71,7 @@ Sans: Inter Tight, falling back to Segoe UI Variable. Mono: JetBrains Mono, fall
 
 ## 6. Iconography
 
-1.75px stroke, rounded caps/joins, 20px grid, drawn in `currentColor`. Needed glyphs: wifi, shield-check, globe, power, plus, pencil, trash, refresh, chevron, signal-bars (5 segments), arrow-up/down, info. Icon tiles are 36px rounded squares on `--bg-3`.
+1.75px stroke, rounded caps/joins, 20px grid, drawn in `currentColor`. Needed glyphs: wifi, ethernet (shown instead of wifi when the selected interface is wired), shield-check, globe, power, plus, pencil, trash, refresh, chevron, signal-bars (5 segments), arrow-up/down, info. Icon tiles are 36px rounded squares on `--bg-3`.
 
 ## 7. Components
 

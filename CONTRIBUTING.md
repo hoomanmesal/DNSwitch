@@ -43,4 +43,4 @@ The UI test changes your real DNS settings and restores them at the end. Check y
 
 ## Reporting bugs
 
-Open an issue using the bug report form and include your Windows version, the DNSwitch version and steps to reproduce. For security problems, do not open a public issue; see [SECURITY.md](SECURITY.md).
+Open an issue using the bug report form and include your operating system and version (on Linux also the desktop and Wayland or X11), the DNSwitch version and steps to reproduce. For security problems, do not open a public issue; see [SECURITY.md](SECURITY.md).

@@ -6,24 +6,25 @@
 
 web
 
-(Electron desktop app for Windows: web technologies in a native window, no OS-native design language.)
+(Electron desktop app for Windows and Linux: web technologies in a native window, no OS-native design language. macOS is planned.)
 
 ## Users
 
-Everyday Windows users, mostly non-technical. Situation: a site is slow or blocked, or they want a different DNS provider for privacy, and they want to change it without digging through Windows network settings or learning networking jargon. They are on their own PC, usually on Wi-Fi.
+Everyday Windows and Linux desktop users, mostly non-technical. Situation: a site is slow or blocked, or they want a different DNS provider for privacy, and they want to change it without digging through their system's network settings or learning networking jargon. They are on their own PC, usually on Wi-Fi.
 
 ## Product Purpose
 
-DNSwitch shows the DNS configuration of the connected Wi-Fi network and lets the user change it, save named DNS presets, switch between presets in one click, or return to Windows' automatic (DHCP) setting. Success: a user can see what their DNS is, change it, and trust that it took effect, in a few seconds and without help.
+DNSwitch shows the DNS configuration of the connected Wi-Fi network and lets the user change it, save named DNS presets, switch between presets in one click, or return to the network's automatic (DHCP) setting. Success: a user can see what their DNS is, change it, and trust that it took effect, in a few seconds and without help.
 
 ## Positioning
 
-Confirmed by the user as all three together: (1) instant one-click presets in a tiny focused tool, (2) live visibility of the real current state alongside control, and (3) a noticeably more polished, calm, trustworthy experience than Windows Settings or typical DNS-changer utilities.
+Confirmed by the user as all three together: (1) instant one-click presets in a tiny focused tool, (2) live visibility of the real current state alongside control, and (3) a noticeably more polished, calm, trustworthy experience than the built-in network settings or typical DNS-changer utilities.
 
 ## Operating Context
 
-- Windows desktop; reads the connected Wi-Fi adapter (default) and lists other active adapters in a selector.
-- Reading DNS needs no privileges; changing it needs administrator rights (direct if the app is elevated, otherwise a UAC prompt per change).
+- Windows and Linux desktop; reads the connected Wi-Fi connection (default) and lists other active network interfaces in a selector.
+- Windows changes DNS through PowerShell. Linux changes it through NetworkManager (`nmcli`), so it needs NetworkManager and does not support systems that only use systemd-networkd or other tools.
+- Reading DNS needs no privileges. On Windows, changing it needs administrator rights (direct if the app is elevated, otherwise a UAC prompt per change). On Linux the app never runs as root: NetworkManager asks for the user's password when the account is not allowed to change network settings.
 - Presets are stored locally in the app's user-data folder.
 
 ## Capabilities and Constraints
@@ -34,9 +35,9 @@ Built and tested today:
 - Custom IPv4 servers (alternate optional); "Reset to automatic DNS".
 - Packaged as a portable `.exe` (`npm run dist`).
 
-Known facts and limits: IPv4 DNS only; a DNS change takes about 5 seconds to apply; the app has no network calls of its own.
+Known facts and limits: IPv4 DNS only (a Linux or Windows machine can still use IPv6 DNS servers handed out by the router, which this app does not change); a VPN that pushes its own DNS can override the chosen servers; a DNS change takes about 5 seconds to apply; the app has no network calls of its own.
 
-Explicitly undecided (the user expressed no preference): whether IPv6, DoH/DoT, Windows versions beyond the current 10/11 test machine, or offline-only guarantees are in or out of scope. Latency measurement is not built; it appears only as a proposal in DESIGN.md.
+Explicitly undecided (the user expressed no preference): whether IPv6, DoH/DoT, Windows versions beyond the current 10/11 test machine, Linux distributions beyond the NetworkManager-based desktops (tested on Ubuntu 26.04), macOS, or offline-only guarantees are in or out of scope. Latency measurement is not built; it appears only as a proposal in DESIGN.md.
 
 Untested: the UAC prompt path on a machine with UAC enabled (UAC is off on the development PC), and multi-adapter selection (only one Wi-Fi adapter was available).
 
