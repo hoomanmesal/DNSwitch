@@ -22,8 +22,8 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   // Keep the window rendering even when another window covers it; Windows otherwise pauses occluded windows and CDP actions hang.
   const flags = [`--remote-debugging-port=${PORT}`, `--user-data-dir=${userData}`, '--disable-features=CalculateNativeWinOcclusion', '--disable-backgrounding-occluded-windows', '--disable-renderer-backgrounding'];
   const proc = process.env.APP_EXE
-    ? spawn(process.env.APP_EXE, flags, { stdio: 'ignore' })
-    : spawn(electron, ['.', ...flags], { cwd: path.join(__dirname, '..'), stdio: 'ignore' });
+    ? spawn(process.env.APP_EXE, flags, { stdio: 'ignore', detached: process.platform !== 'win32' })
+    : spawn(electron, ['.', ...flags], { cwd: path.join(__dirname, '..'), stdio: 'ignore', detached: process.platform !== 'win32' });
   const before = await dns.getState();
   const wifi = before.adapters.find((a) => a.isWifi);
   let browser;
@@ -61,7 +61,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
     check('ssid shown', (await txt('#ssid')).includes(before.ssid || wifi.description), await txt('#ssid'));
     check('Wi-Fi adapter selected by default', (await page.$eval('#adapter', (e) => e.selectedOptions[0].textContent)).includes('Wi-Fi'));
     check('current servers match system', (await txt('#cur1')) === (wifi.servers[0] || '—'), await txt('#cur1'));
-    check('mode badge matches', (await txt('#mode')) === (wifi.mode === 'auto' ? 'Automatic (DHCP)' : 'Manual'));
+    check('mode badge matches', (await txt('#mode')) === (wifi.mode === 'auto' ? 'Automatic' : 'Manual'));
     check('4 default presets', (await presetNames()).join() === 'Google,Cloudflare,Quad9,OpenDNS', (await presetNames()).join());
 
     // --- Apply preset
@@ -161,7 +161,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
     await page.click('#auto'); await waitIdle(); await sleep(800);
     s = (await dns.getState()).adapters.find((a) => a.index === wifi.index);
     check('automatic: system back to DHCP', s.mode === 'auto' && s.servers.length > 0, JSON.stringify(s));
-    check('automatic: UI badge', (await txt('#mode')) === 'Automatic (DHCP)');
+    check('automatic: UI badge', (await txt('#mode')) === 'Automatic');
     check('automatic: button disabled', await page.$eval('#auto', (b) => b.disabled));
     check('automatic: no ACTIVE preset', (await page.$$eval('#presets li.active', (e) => e.length)) === 0);
 
@@ -188,7 +188,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
     failures++;
   } finally {
     try { if (browser) await browser.disconnect(); } catch {}
-    proc.kill();
+    try { process.platform === 'win32' ? proc.kill() : process.kill(-proc.pid); } catch {} // whole group: the AppImage starts child processes
     if (process.env.APP_EXE) { try { require('child_process').execSync('taskkill /F /IM "DNSwitch*.exe" /T', { stdio: 'ignore' }); } catch {} }
     // restore original DNS
     if (wifi) await dns.applyDns(wifi.index, wifi.mode === 'manual' ? wifi.servers : null);

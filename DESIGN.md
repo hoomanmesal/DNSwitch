@@ -1,8 +1,8 @@
 # DNSwitch Design System
 
-Dark, instrument-panel UI for a small Windows utility that shows and switches DNS. Derived from five network-monitoring references (see [design/references.md](design/references.md)). Tokens live in [src/tokens.css](src/tokens.css); a live component kit is in [design/kit.html](design/kit.html).
+Dark, instrument-panel UI for a small desktop utility (Windows, Linux) that shows and switches DNS. Derived from five network-monitoring references (see [design/references.md](design/references.md)). Tokens live in [src/tokens.css](src/tokens.css); a live component kit is in [design/kit.html](design/kit.html).
 
-> Status: applied to the app (`src/styles.css`, `src/index.html`). Not yet built: the latency dial and signal bars (need a DNS probe) and the Automatic | Manual segmented control; the app uses the ghost "Set automatically" button instead.
+> Status: applied to the app (`src/styles.css`, `src/index.html`). Not yet built: the latency dial and signal bars (need a DNS probe) and the Automatic | Manual segmented control; the app uses the ghost "Reset to automatic DNS" button instead.
 
 ## 1. Concept
 
@@ -71,7 +71,7 @@ Sans: Inter Tight, falling back to Segoe UI Variable. Mono: JetBrains Mono, fall
 
 ## 6. Iconography
 
-1.75px stroke, rounded caps/joins, 20px grid, drawn in `currentColor`. Needed glyphs: wifi, shield-check, globe, power, plus, pencil, trash, refresh, chevron, signal-bars (5 segments), arrow-up/down, info. Icon tiles are 36px rounded squares on `--bg-3`.
+1.75px stroke, rounded caps/joins, 20px grid, drawn in `currentColor`. Needed glyphs: wifi, ethernet (shown instead of wifi when the selected interface is wired), shield-check, globe, power, plus, pencil, trash, refresh, chevron, signal-bars (5 segments), arrow-up/down, info. Icon tiles are 36px rounded squares on `--bg-3`.
 
 ## 7. Components
 
@@ -79,7 +79,7 @@ Sans: Inter Tight, falling back to Segoe UI Variable. Mono: JetBrains Mono, fall
 Pill, 28px high, 12px label. Variants: `ok` (green text on `--ok-bg`, shield icon, label "Automatic" or "Manual"), `warn`, `alert`, `neutral`. A 6px LED dot may lead the label; the `ok` LED uses `--shadow-glow-ok`.
 
 ### Hero readout
-Centred block: state chip, SSID (Body, `--text-2`), then the **primary DNS address in Display mono**, then the alternate in Title mono `--text-2`. Replace with "Automatic (DHCP)" in Title sans plus the resolved servers beneath when mode is auto. Count/morph animation between values.
+Centred block: state chip, SSID (Body, `--text-2`), then the **primary DNS address in Display mono**, then the alternate in Title mono `--text-2`. Replace with "Automatic" in Title sans plus the resolved servers beneath when mode is auto. Count/morph animation between values.
 
 ### Stat tile
 `--bg-3`, radius 14, padding 12 x 14. Label (Label style) top-left, optional directional arrow top-right (green = good/down, amber = secondary). Value in mono 22/600 with muted unit. Used for Preferred, Alternate, and (future) Latency.
@@ -88,13 +88,13 @@ Centred block: state chip, SSID (Body, `--text-2`), then the **primary DNS addre
 270 degree arc of segmented ticks on `--bg-3`, progress arc in `--ice`, a 1.5px `--alert` needle with centre hub, value in mono 28 with unit below. In this app it shows **latency to the active DNS server (ms)**, scale 0 to 200. Idle/unknown state: arc empty, value "--". Ring variant (ref 3): 56px circular progress with centred caption, used in preset rows.
 
 ### Primary button (pill)
-Height 48, full width in cards, `--ice` fill, `--ice-ink` text, 600 weight. Hover: +6% brightness; active: translateY(1px); disabled: 40% opacity, no hover. Exactly one per screen ("Apply" in the custom card, or "Set automatically" when that is the main task).
+Height 48, full width in cards, `--ice` fill, `--ice-ink` text, 600 weight. Hover: +6% brightness; active: translateY(1px); disabled: 40% opacity, no hover. Exactly one per screen ("Apply" in the custom card, or "Reset to automatic DNS" when that is the main task).
 
 ### Secondary / ghost button
 Pill, 1px `--line-strong`, transparent, `--text`. Hover fills `--bg-3`. Small variant is 32px high.
 
 ### Segmented control
-Pill container `--bg-3`, inner active segment `--ice` with `--ice-ink` text. Used for Mode: Automatic | Manual (replaces the separate "Set automatically" button in a future iteration).
+Pill container `--bg-3`, inner active segment `--ice` with `--ice-ink` text. Used for Mode: Automatic | Manual (replaces the separate "Reset to automatic DNS" button in a future iteration).
 
 ### Preset row (frosted list, ref 4)
 Radius 14, `--glass` fill, 1px `--line`, gap 8. Left to right: 36px icon tile (globe), name (Body 600), IPs (mono 12 `--text-3`), 5-segment signal bar (latency band, optional), right-aligned actions (edit, delete as 28px ghost icons, visible on hover/focus). **Active** row: 1px `--ok` border, `--ok-bg` tint, "ACTIVE" count-pill with `--ok` dot. Click anywhere applies.
@@ -134,16 +134,16 @@ Custom card   CUSTOM
 Single column, max content width 560, 16px gutters at min width, no horizontal scroll.
 
 **Window sizes:** default 520 x 720, minimum 440 x 560 (enforced by the window), no maximum.
-**Breakpoints (CSS px):** under 860 = single column; 860 and up = two columns (hero sticky on the left, presets and custom stacked on the right, content max 1000, centred). Under 640 tall, spacing and the readout tighten so the hero and primary action stay above the fold. Under 480 wide, the readout drops to 32px and the Apply row stacks.
+**Breakpoints (CSS px):** under 860 = single column; 860 and up = two columns (hero sticky on the left, presets and custom stacked on the right, content max 1000, centred). Under 640 tall, spacing and the readout tighten so the hero and primary action stay above the fold. Under 480 wide, the readout drops to 32px and the Apply row stacks. Under 300 wide (about 200% zoom at the minimum window), preset rows wrap (icon hidden, ACTIVE tag and buttons move under the name) and the readout may shrink, so nothing scrolls sideways.
 **Shrinking rule:** every grid and flex child that holds text uses `minmax(0, 1fr)` or `min-width: 0` with ellipsis, so long Wi-Fi names, adapter names, preset names and 255.255.255.255 never push a card past the window. The status chip never wraps; the status/adapter row wraps instead. Background: `--bg-0` with a faint `--glow` radial at the top and a 4% circuit-trace SVG pattern.
 
 ## 9. States and copy
 
 - **Loading:** hero readout shows "--" and a skeleton shimmer; busy overlay appears only for user-initiated actions, never background refresh.
-- **Automatic:** chip "Automatic (DHCP)", readout shows the DHCP-provided servers.
+- **Automatic:** chip "Automatic", readout shows the DHCP-provided servers.
 - **Manual:** chip "Manual", active preset highlighted if servers match exactly.
-- **Error:** toast plus, for blocking errors, banner. Plain language: "Administrator rights are required to change DNS. Restart DNSwitch as administrator." / "Administrator permission was declined."
-- **No adapter:** banner "No active network adapters. Connect to a network and refresh." Controls disabled.
+- **Error:** toast plus, for blocking errors, banner. Plain language: "Administrator rights are required to change DNS. Restart DNSwitch as administrator." / "Administrator permission was declined." On Linux: "Permission to change network settings was declined or is not allowed for this account."
+- **No network interface:** banner "No active network interfaces. Connect to a network and refresh." Controls disabled.
 - **Empty presets:** "No presets yet. Click + New to add one."
 - **Voice:** short, literal, no exclamation marks.
 

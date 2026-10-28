@@ -1,6 +1,7 @@
 name: Release
 
-# Push a tag such as v1.0.1 to build the installer and portable exe and attach them to a DRAFT release.
+# Push a tag such as v1.0.1 to build the Windows installer and portable exe and the Linux AppImage and .deb,
+# and attach them to a DRAFT release.
 # Review the draft on GitHub, then press Publish.
 on:
   push:
@@ -10,7 +11,38 @@ permissions:
   contents: write
 
 jobs:
+  linux:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Unit tests
+        run: npm test
+
+      - name: Build AppImage and .deb
+        run: npm run dist:linux -- --publish never
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: linux-build
+          path: |
+            dist/*.AppImage
+            dist/*.deb
+          if-no-files-found: error
+
   release:
+    needs: linux
     runs-on: windows-latest
     timeout-minutes: 30
     steps:
@@ -43,11 +75,17 @@ jobs:
       - name: Build installer and portable exe
         run: npm run dist -- --publish never
 
+      - name: Get the Linux build
+        uses: actions/download-artifact@v7
+        with:
+          name: linux-build
+          path: dist
+
       - name: Checksums
         shell: pwsh
         run: |
           Set-Location dist
-          Get-ChildItem *-setup.exe, *-portable.exe | ForEach-Object {
+          Get-ChildItem *-setup.exe, *-portable.exe, *.AppImage, *.deb | ForEach-Object {
             $h = (Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLower()
             "$h  $($_.Name)"
           } | Set-Content -Encoding ascii SHA256SUMS.txt
@@ -64,4 +102,4 @@ jobs:
             --draft $flags \
             --title "DNSwitch ${GITHUB_REF_NAME#v}" \
             --notes-file release-notes.md \
-            dist/*-setup.exe dist/*-portable.exe dist/SHA256SUMS.txt
+            dist/*-setup.exe dist/*-portable.exe dist/*.AppImage dist/*.deb dist/SHA256SUMS.txt

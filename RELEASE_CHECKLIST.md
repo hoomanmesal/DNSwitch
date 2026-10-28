@@ -13,7 +13,8 @@ Everything to do before, during and after a DNSwitch release. [RELEASING.md](REL
 - [ ] Manual checks done (see section 4)
 - [ ] `CHANGELOG.md`, `package.json` and docs updated for the version
 - [ ] Release commit pushed, CI green, tag pushed
-- [ ] Draft release checked: three files, notes, checksums, smoke test of the downloaded exe
+- [ ] Linux: the .deb installs, shows its icon in the dock, applies a preset and uninstalls cleanly; the AppImage starts
+- [ ] Draft release checked: five files, notes, checksums, smoke test of the downloaded exe and .deb
 - [ ] Published; latest release and README links verified
 
 ## 1. Decide the release
@@ -45,7 +46,7 @@ node tests/ui.test.js         # end to end; changes your real Wi-Fi DNS and rest
   ```powershell
   Get-DnsClientServerAddress -InterfaceAlias "Wi-Fi" -AddressFamily IPv4
   ```
-  To return to automatic: `node -e "require('./src/dns').applyDns(<ifIndex>, null)"` or use the app's "Set automatically" button.
+  To return to automatic: `node -e "require('./src/dns').applyDns(<ifIndex>, null)"` or use the app's "Reset to automatic DNS" button.
 - A test that fails once and passes on a clean rerun is a flake; note it. A test that fails twice is a bug: fix it before releasing.
 - Optional but useful: `LIVE=1 node --test tests/backend.test.js` runs the backend against the real adapter.
 
@@ -102,7 +103,7 @@ git push origin main
 - [ ] Wait for CI on that commit to go green.
 - [ ] `git tag -a vX.Y.Z -m "vX.Y.Z"` then `git push origin vX.Y.Z`.
 - [ ] The Release workflow creates a **draft**. Check it:
-  - the draft has `*-setup.exe`, `*-portable.exe` and `SHA256SUMS.txt`
+  - the draft has `*-setup.exe`, `*-portable.exe`, `*.AppImage`, `*.deb` and `SHA256SUMS.txt`
   - the notes match the changelog section
   - download the files and compare `Get-FileHash <file> -Algorithm SHA256` with `SHA256SUMS.txt`
   - run the layout and UI tests (or at least launch and apply a preset) against the **downloaded** portable exe, not your local build

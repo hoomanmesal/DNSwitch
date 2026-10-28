@@ -72,18 +72,17 @@ function render() {
   if (hasAdapter) ad.value = c.index;
   ad.disabled = state.adapters.length < 2;
 
-  const wifi = state.adapters.find((a) => a.isWifi);
+  document.querySelector('.adapter use').setAttribute('href', c && !c.isWifi ? '#i-ethernet' : '#i-wifi');
   $('ssid').textContent = c
     ? (c.isWifi && state.ssid ? 'Connected to ' + state.ssid : c.description)
     : 'No active network connection';
-  if (!hasAdapter) banner('No active network adapters. Connect to a network and refresh.');
-  else if (!wifi) banner('No connected Wi-Fi adapter found - showing another active adapter.');
+  if (!hasAdapter) banner('No active network interfaces. Connect to a network and refresh.');
   else banner('');
 
   const chip = $('mode');
   chip.className = 'chip ' + (hasAdapter ? (c.mode === 'auto' ? 'auto' : 'manual') : 'neutral');
   const dot = document.createElement('i');
-  chip.replaceChildren(dot, document.createTextNode(hasAdapter ? (c.mode === 'auto' ? 'Automatic (DHCP)' : 'Manual') : '—'));
+  chip.replaceChildren(dot, document.createTextNode(hasAdapter ? (c.mode === 'auto' ? 'Automatic' : 'Manual') : '—'));
   setText($('cur1'), (hasAdapter && c.servers[0]) || '—');
   setText($('cur2'), (hasAdapter && c.servers[1]) || '—');
   $('auto').disabled = !hasAdapter || c.mode === 'auto';
@@ -169,14 +168,14 @@ async function refresh(quiet) {
 
 async function apply(servers, label) {
   const c = current();
-  if (!c) return toast('No adapter selected.', true);
+  if (!c) return toast('No network interface selected.', true);
   gen++;
   try {
     state = await call(window.api.applyDns(c.index, servers),
       servers ? 'Applying DNS...' : 'Resetting to automatic...');
     gen++;
     render();
-    toast(servers ? 'Applied ' + (label || servers.join(', ')) : 'DNS set to automatic');
+    toast(servers ? 'Applied ' + (label || servers.join(', ')) : 'DNS reset to automatic');
   } catch (e) {
     toast(e.message, true);
     refresh(true);

@@ -1,7 +1,7 @@
 {
   "name": "dnswitch",
   "version": "1.0.1",
-  "description": "View and switch Windows DNS settings for your Wi-Fi connection",
+  "description": "View and switch DNS settings for your network connection on Windows and Linux",
   "license": "MIT",
   "author": "hoomanmesal",
   "homepage": "https://github.com/hoomanmesal/DNSwitch#readme",
@@ -13,12 +13,14 @@
     "url": "https://github.com/hoomanmesal/DNSwitch/issues"
   },
   "main": "src/main.js",
+  "desktopName": "dnswitch.desktop",
   "scripts": {
     "start": "electron .",
     "test": "node --test tests/backend.test.js",
     "test:layout": "node tests/layout.test.js",
-    "test:live": "set LIVE=1&& node --test tests/backend.test.js",
-    "dist": "electron-builder --win"
+    "test:live": "node --env-file=tests/live.env --test tests/backend.test.js",
+    "dist": "electron-builder --win",
+    "dist:linux": "electron-builder --linux"
   },
   "devDependencies": {
     "@fontsource-variable/inter-tight": "^5.3.0",
@@ -68,6 +70,32 @@
     },
     "portable": {
       "artifactName": "DNSwitch-${version}-portable.${ext}"
+    },
+    "linux": {
+      "icon": "assets/icon.png",
+      "category": "Network",
+      "maintainer": "hoomanmesal <50268378+hoomanmesal@users.noreply.github.com>",
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "deb",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "syncDesktopName": true
+    },
+    "appImage": {
+      "artifactName": "DNSwitch-${version}-x86_64.${ext}"
+    },
+    "deb": {
+      "artifactName": "DNSwitch-${version}-amd64.${ext}"
     },
     "electronLanguages": [
       "en-US"

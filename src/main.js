@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, Menu } = require('electron');
+const { app, BrowserWindow, ipcMain, Menu, session } = require('electron');
 const path = require('path');
 const dns = require('./dns');
 const { PresetStore } = require('./presets');
@@ -34,6 +34,9 @@ function handle(channel, fn) {
 }
 
 app.whenReady().then(() => {
+  // Electron would otherwise download a spellcheck dictionary from Google (SECURITY.md: no network calls).
+  session.defaultSession.setSpellCheckerLanguages([]);
+  session.defaultSession.setSpellCheckerDictionaryDownloadURL('file:///nonexistent/');
   store = new PresetStore(path.join(app.getPath('userData'), 'presets.json'));
   handle('state:get', () => dns.getState());
   handle('admin:get', () => dns.isAdmin());
