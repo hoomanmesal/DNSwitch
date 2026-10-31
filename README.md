@@ -1,19 +1,41 @@
-# DNSwitch
+<p align="center"><img src="assets/icon.png" alt="DNSwitch icon" width="96"></p>
+<h1 align="center">DNSwitch</h1>
+<p align="center">See the DNS servers your network uses and switch them in one click.</p>
 
-[![CI](https://github.com/hoomanmesal/DNSwitch/actions/workflows/ci.yml/badge.svg)](https://github.com/hoomanmesal/DNSwitch/actions/workflows/ci.yml)
-[![Latest release](https://img.shields.io/github/v/release/hoomanmesal/DNSwitch)](https://github.com/hoomanmesal/DNSwitch/releases/latest)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+<p align="center">
+  <a href="https://github.com/hoomanmesal/DNSwitch/releases/latest"><b>Download</b></a> ·
+  <a href="#install">Install</a> ·
+  <a href="CHANGELOG.md">Changelog</a>
+</p>
 
-See the DNS servers of your Wi-Fi connection and switch them in one click.
+<p align="center">
+  <a href="https://github.com/hoomanmesal/DNSwitch/actions/workflows/ci.yml"><img src="https://github.com/hoomanmesal/DNSwitch/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://github.com/hoomanmesal/DNSwitch/releases/latest"><img src="https://img.shields.io/github/v/release/hoomanmesal/DNSwitch" alt="Latest release"></a>
+  <img src="https://img.shields.io/badge/platform-Windows%20%7C%20Linux-informational" alt="Platforms: Windows and Linux">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a>
+</p>
 
-- Shows the current DNS (automatic or manual) for the connected Wi-Fi adapter
-- Save DNS presets (Google, Cloudflare, Quad9, OpenDNS included) and switch with one click
-- Enter custom servers, or reset to automatic (DHCP)
-- Runs on Windows 10/11 and on Linux with NetworkManager
+<p align="center"><img src="docs/screenshot.png" alt="DNSwitch showing the current DNS 1.1.1.1 and a list of presets, with Cloudflare active" width="760"></p>
+<p align="center"><sub>Screenshot with sample data.</sub></p>
 
-## Download
+## Features
 
-Get the latest version from the [Releases page](https://github.com/hoomanmesal/DNSwitch/releases/latest):
+- Shows the current DNS (automatic or manual) for your active network interface, Wi-Fi first, and refreshes it every 8 seconds.
+- Presets for Google, Cloudflare, Quad9 and OpenDNS are included. Add, edit and delete your own, and switch with one click.
+- Enter custom servers, or reset to automatic DNS from your network.
+- No telemetry and no network calls from the app. See [SECURITY.md](SECURITY.md).
+
+| Platform | Status |
+|---|---|
+| Windows 10/11 (64-bit) | Supported: installer and portable exe |
+| Linux with NetworkManager | Supported: .deb and AppImage (x64) |
+| macOS | Planned, not available yet |
+
+## Install
+
+### Windows
+
+Download the latest version from the [Releases page](https://github.com/hoomanmesal/DNSwitch/releases/latest):
 
 | File | What it is |
 |---|---|
