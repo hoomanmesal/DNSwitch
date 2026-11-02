@@ -76,7 +76,7 @@ jobs:
         run: npm run dist -- --publish never
 
       - name: Get the Linux build
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: linux-build
           path: dist
